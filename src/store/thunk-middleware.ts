@@ -39,7 +39,7 @@ export const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action
                 object: stmt.object.id,
                 comment: stmt.result?.extensions?.[COMMENT_EXTENSION] || '',
                 grade: stmt.result?.score?.scaled ? Math.round(stmt.result.score.scaled * 10) : 5
-              }));
+              })).sort((a, b) => a.timestamp - b.timestamp); // Sort by timestamp ascending
 
               console.log('Transformed Statements:', transformedStatements);
 

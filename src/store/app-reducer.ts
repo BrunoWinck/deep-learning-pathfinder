@@ -31,7 +31,7 @@ export const appReducer = (state: AppState, action: Action): AppState => {
     case 'STATEMENT_PENDING':
       return {
         ...state,
-        learningStatements: [action.payload, ...state.learningStatements]
+        learningStatements: [...state.learningStatements, action.payload]
       };
     case 'STATEMENT_SUCCESS':
       return {
