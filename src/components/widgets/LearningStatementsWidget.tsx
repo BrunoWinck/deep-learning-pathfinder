@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export const LearningStatementsWidget = () => {
   const { state, dispatch } = useApp();
@@ -29,9 +30,9 @@ export const LearningStatementsWidget = () => {
     <div className="h-full flex flex-col">
       <h2 className="text-lg font-semibold mb-4">Learning Statements</h2>
       
-      {/* Display existing statements */}
-      <div className="flex-1 overflow-auto mb-4">
-        <div className="space-y-3">
+      {/* Display existing statements in a scrollable area */}
+      <ScrollArea className="flex-1 mb-4">
+        <div className="space-y-3 pr-4">
           {state.learningStatements.map((statement) => (
             <div key={statement.id} className="bg-white p-3 rounded-lg shadow-sm">
               <div className="flex items-center gap-2">
@@ -54,7 +55,7 @@ export const LearningStatementsWidget = () => {
             </div>
           ))}
         </div>
-      </div>
+      </ScrollArea>
 
       {/* Form for adding new statements */}
       <div className="space-y-4">
