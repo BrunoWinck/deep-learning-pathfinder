@@ -116,10 +116,10 @@ const initialState: AppState = {
   voiceEnabled: true,
   activeResourceLink: null,
   xAPIConfig: {
-    endpoint: 'https://cloud.scorm.com/lrs/PMOJRBY6QG',
+    endpoint: 'https://lrs.adlnet.gov/xapi',
     credentials: {
-      username: 'bwmscormcloud@kneaver.com',
-      password: 'lO369e1^{g(0'
+      username: 'xapi-tools',
+      password: 'xapi-tools'
     }
   }
 };
@@ -182,8 +182,10 @@ const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
     if (action.type === 'FETCH_STATEMENTS') {
       try {
         const { endpoint, credentials } = state.xAPIConfig;
-        const headers = new Headers();
-        headers.set('Authorization', 'Basic ' + btoa(`${credentials.username}:${credentials.password}`));
+        const headers = new Headers({
+          'Authorization': 'Basic ' + btoa(`${credentials.username}:${credentials.password}`),
+          'X-Experience-API-Version': '1.0.0'
+        });
         
         toast.promise(
           fetch(`${endpoint}/statements?limit=255`, { headers })
