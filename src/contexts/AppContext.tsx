@@ -53,9 +53,34 @@ type Action =
   | { type: 'ADD_AI_QUERY'; payload: AppState['aiQueries'][0] }
   | { type: 'SET_ACTIVE_RESOURCE_LINK'; payload: string | null }
   | { type: 'TOGGLE_VOICE'; payload: boolean }
-  | { type: 'HYDRATE_STATEMENTS'; payload: AppState['learningStatements'] };
+  | { type: 'HYDRATE_STATEMENTS'; payload: AppState['learningStatements'] }
+  | { type: 'STATEMENT_PENDING'; payload: AppState['learningStatements'][0] }
+  | { type: 'STATEMENT_SUCCESS'; payload: { id: string } }
+  | { type: 'STATEMENT_FAILED'; payload: { id: string } };
 
-type AsyncAction = { type: 'FETCH_STATEMENTS' };
+type AsyncAction = 
+  | { type: 'FETCH_STATEMENTS' }
+  | { 
+      type: 'CREATE_STATEMENT'; 
+      payload: {
+        verb: { id: string; display: { "en-US": string } };
+        object: {
+          id: string;
+          definition: {
+            name: { "en-US": string };
+            description: { "en-US": string };
+          };
+          objectType: "Activity";
+        };
+        result?: {
+          response?: string;
+          score?: {
+            scaled: number;
+          };
+        };
+      }
+    };
+
 type AppAction = Action | AsyncAction;
 
 const initialState: AppState = {
@@ -128,6 +153,25 @@ const appReducer = (state: AppState, action: Action): AppState => {
       return { ...state, voiceEnabled: action.payload };
     case 'HYDRATE_STATEMENTS':
       return { ...state, learningStatements: action.payload };
+    case 'STATEMENT_PENDING':
+      return {
+        ...state,
+        learningStatements: [action.payload, ...state.learningStatements]
+      };
+    case 'STATEMENT_SUCCESS':
+      return {
+        ...state,
+        learningStatements: state.learningStatements.map(stmt =>
+          stmt.id === action.payload.id ? { ...stmt } : stmt
+        )
+      };
+    case 'STATEMENT_FAILED':
+      return {
+        ...state,
+        learningStatements: state.learningStatements.filter(
+          stmt => stmt.id !== action.payload.id
+        )
+      };
     default:
       return state;
   }
@@ -180,6 +224,69 @@ const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
         console.error('Failed to fetch xAPI statements:', error);
         toast.error('Failed to connect to xAPI server', {
           duration: 30000 // 30 seconds
+        });
+      }
+    } else if (action.type === 'CREATE_STATEMENT') {
+      const statementId = crypto.randomUUID();
+      const timestamp = new Date().toISOString();
+      
+      dispatch({
+        type: 'STATEMENT_PENDING',
+        payload: {
+          id: statementId,
+          timestamp: Date.now(),
+          verb: action.payload.verb.display["en-US"].toLowerCase() as any,
+          object: action.payload.object.definition.name["en-US"],
+          comment: action.payload.result?.response || '',
+          grade: action.payload.result?.score?.scaled ? Math.round(action.payload.result.score.scaled * 10) : 5
+        }
+      });
+
+      try {
+        const { endpoint, credentials } = state.xAPIConfig;
+        const headers = new Headers({
+          'Authorization': 'Basic ' + btoa(`${credentials.username}:${credentials.password}`),
+          'X-Experience-API-Version': '1.0.0',
+          'Content-Type': 'application/json'
+        });
+
+        const statement = {
+          actor: {
+            objectType: "Agent",
+            name: "Learner",
+            account: {
+              homePage: "https://lrs.veracity.it",
+              name: statementId
+            }
+          },
+          verb: action.payload.verb,
+          object: action.payload.object,
+          result: action.payload.result
+        };
+
+        const response = await fetch(
+          `${endpoint}/statements?statementId=${statementId}`,
+          {
+            method: 'PUT',
+            headers,
+            body: JSON.stringify(statement)
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        dispatch({ type: 'STATEMENT_SUCCESS', payload: { id: statementId } });
+        toast.success('Learning statement created successfully', {
+          duration: 30000
+        });
+
+      } catch (error) {
+        console.error('Failed to create statement:', error);
+        dispatch({ type: 'STATEMENT_FAILED', payload: { id: statementId } });
+        toast.error('Failed to create learning statement', {
+          duration: 30000
         });
       }
     } else {
