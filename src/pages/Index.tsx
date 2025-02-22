@@ -1,6 +1,10 @@
 
 import { DashboardLayout } from "@/components/layout/DashboardLayout";
 import { LearningPathsWidget } from "@/components/widgets/LearningPathsWidget";
+import { AIDebugWidget } from "@/components/widgets/AIDebugWidget";
+import { ChatWidget } from "@/components/widgets/ChatWidget";
+import { SearchDebugWidget } from "@/components/widgets/SearchDebugWidget";
+import { LearningStatementsWidget } from "@/components/widgets/LearningStatementsWidget";
 import { AppProvider } from "@/contexts/AppContext";
 
 const Index = () => {
@@ -11,12 +15,20 @@ const Index = () => {
           <LearningPathsWidget />
         </div>
         <div className="space-y-4">
-          <div className="bg-gray-100 rounded-lg p-4">Widget 2</div>
-          <div className="bg-orange-100 rounded-lg p-4">Widget 3</div>
+          <div className="bg-gray-100 rounded-lg p-4">
+            <AIDebugWidget />
+          </div>
+          <div className="bg-orange-100 rounded-lg p-4">
+            <ChatWidget />
+          </div>
         </div>
         <div className="space-y-4">
-          <div className="bg-green-100 rounded-lg p-4">Widget 4</div>
-          <div className="bg-violet-100 rounded-lg p-4">Widget 5</div>
+          <div className="bg-green-100 rounded-lg p-4">
+            <SearchDebugWidget />
+          </div>
+          <div className="bg-violet-100 rounded-lg p-4">
+            <LearningStatementsWidget />
+          </div>
         </div>
       </DashboardLayout>
     </AppProvider>
