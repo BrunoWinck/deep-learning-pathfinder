@@ -212,10 +212,11 @@ const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
               console.log('Transformed Statements:', transformedStatements);
 
               dispatch({ type: 'HYDRATE_STATEMENTS', payload: transformedStatements });
+              return transformedStatements.length;
             }),
           {
             loading: 'Fetching learning statements...',
-            success: 'Learning statements loaded successfully',
+            success: (count) => `${count} Learning statements loaded successfully`,
             error: (err) => `Failed to load statements: ${err.message}`,
             duration: 30000 // 30 seconds
           }
@@ -264,6 +265,8 @@ const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
           result: action.payload.result
         };
 
+        console.log('Sending statement:', statement);
+
         const response = await fetch(
           `${endpoint}/statements?statementId=${statementId}`,
           {
@@ -272,6 +275,9 @@ const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
             body: JSON.stringify(statement)
           }
         );
+
+        const responseData = await response.json().catch(() => null);
+        console.log('Statement creation response:', responseData);
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
