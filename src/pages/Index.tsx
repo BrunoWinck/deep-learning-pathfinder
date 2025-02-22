@@ -1,13 +1,19 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { DashboardLayout } from "@/components/layout/DashboardLayout";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
+    <DashboardLayout>
+      <div className="bg-blue-100 rounded-lg p-4">Widget 1</div>
+      <div className="space-y-4">
+        <div className="bg-gray-100 rounded-lg p-4">Widget 2</div>
+        <div className="bg-orange-100 rounded-lg p-4">Widget 3</div>
       </div>
-    </div>
+      <div className="space-y-4">
+        <div className="bg-green-100 rounded-lg p-4">Widget 4</div>
+        <div className="bg-violet-100 rounded-lg p-4">Widget 5</div>
+      </div>
+    </DashboardLayout>
   );
 };
 
