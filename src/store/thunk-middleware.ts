@@ -83,11 +83,8 @@ export const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action
         const statement = {
           actor: {
             objectType: "Agent",
-            name: "Learner",
-            account: {
-              homePage: "https://lrs.veracity.it",
-              name: statementId
-            }
+            name: "Bruno Winck",
+            mbox: "mailto:bwmscormcloud@kneaver.com"
           },
           verb: action.payload.verb,
           object: action.payload.object,
