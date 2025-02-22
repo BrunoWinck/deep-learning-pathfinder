@@ -1,0 +1,53 @@
+
+
+###
+GET https://cloud.scorm.com/lrs/PMOJRBY6QG/statements?limit=25
+Authorization: Basic Yndtc2Nvcm1jbG91ZEBrbmVhdmVyLmNvbe+7vzpsTzM2OWUxXntnKDA=
+
+###
+
+GET https://cloud.scorm.com/lrs/PMOJRBY6QG/statements?limit=25
+Authorization: Basic bwmscormcloud@kneaver.com:lO369e1^{g(0
+X-Experience-API-Version: 1.0.0
+
+###
+
+GET https://lrs.adlnet.gov/xapi/statements?agent=%7B'mbox'%3A'mailto%3Abwmscormcloud%40kneaver.com'%7D
+Authorization: Basic xapi-tools:xapi-tools
+X-Experience-API-Version: 1.0.0
+
+###
+
+PUT https://lrs.adlnet.gov/xapi/statements?statementId=66982435-3962-4ce4-9092-7298675309eb
+Authorization: Basic xapi-tools:xapi-tools
+X-Experience-API-Version: 1.0.0
+Content-Type: application/json
+
+{
+    "actor": {
+        "objectType": "Agent",
+        "name": "Joe Student",
+        "account": {
+            "homePage": "https://lrs.veracity.it",
+            "name": "66982435-3962-4ce4-9092-7298675309eb"
+        }
+    },
+    "verb": {
+        "id": "http://adlnet.gov/expapi/verbs/answered",
+        "display": {
+            "en-US": "answered"
+        }
+    },
+    "object": {
+        "id": "http://adlnet.gov/expapi/activities/example",
+        "definition": {
+            "name": {
+                "en-US": "Example Activity"
+            },
+            "description": {
+                "en-US": "Example activity description"
+            }
+        },
+        "objectType": "Activity"
+    }
+}
