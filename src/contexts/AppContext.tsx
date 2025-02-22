@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
 import { LearningPath } from '@/types/learning';
+import { toast } from 'sonner';
 
 interface AppState {
   learningPaths: LearningPath[];
@@ -142,29 +143,39 @@ const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
         const headers = new Headers();
         headers.set('Authorization', 'Basic ' + btoa(`${credentials.username}:${credentials.password}`));
         
-        const response = await fetch(`${endpoint}/statements?limit=255`, {
-          headers
-        });
+        toast.promise(
+          fetch(`${endpoint}/statements?limit=255`, { headers })
+            .then(async response => {
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+            })
+            .then(statements => {
+              if (!Array.isArray(statements)) {
+                throw new Error('Invalid response format from xAPI server');
+              }
+              
+              const transformedStatements = statements.map((stmt: any) => ({
+                id: stmt.id,
+                timestamp: new Date(stmt.timestamp).getTime(),
+                verb: stmt.verb.display['en-US'].toLowerCase(),
+                object: stmt.object.definition?.name['en-US'] || stmt.object.id,
+                comment: stmt.result?.response || '',
+                grade: stmt.result?.score?.scaled ? Math.round(stmt.result.score.scaled * 10) : 5
+              }));
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const statements = await response.json();
-        
-        // Transform xAPI statements to our format
-        const transformedStatements = statements.map((stmt: any) => ({
-          id: stmt.id,
-          timestamp: new Date(stmt.timestamp).getTime(),
-          verb: stmt.verb.display['en-US'].toLowerCase(),
-          object: stmt.object.definition?.name['en-US'] || stmt.object.id,
-          comment: stmt.result?.response || '',
-          grade: stmt.result?.score?.scaled ? Math.round(stmt.result.score.scaled * 10) : 5
-        }));
-
-        dispatch({ type: 'HYDRATE_STATEMENTS', payload: transformedStatements });
+              dispatch({ type: 'HYDRATE_STATEMENTS', payload: transformedStatements });
+            }),
+          {
+            loading: 'Fetching learning statements...',
+            success: 'Learning statements loaded successfully',
+            error: (err) => `Failed to load statements: ${err.message}`
+          }
+        );
       } catch (error) {
         console.error('Failed to fetch xAPI statements:', error);
+        toast.error('Failed to connect to xAPI server');
       }
     } else {
       dispatch(action as Action);
