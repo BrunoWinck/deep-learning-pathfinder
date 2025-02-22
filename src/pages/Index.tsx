@@ -20,7 +20,7 @@ const Index = () => {
           </div>
         </div>
         <div className="space-y-4">
-          <div className="bg-green-100 rounded-lg p-4 h-[400px]">
+          <div className="bg-green-100 rounded-lg p-4 h-[200px]">
             <SearchDebugWidget />
           </div>
           <div className="bg-violet-100 rounded-lg p-4 flex-1">
