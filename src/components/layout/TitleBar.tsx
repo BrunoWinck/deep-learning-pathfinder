@@ -34,7 +34,7 @@ export const TitleBar = () => {
           animate && "bg-blue-100"
         )}>
           <Clock className="h-5 w-5" />
-          <span className="text-lg">
+          <span className="text-lg font-mono">
             {currentTime.toLocaleString('en-US', { 
               dateStyle: 'medium', 
               timeStyle: 'medium',
