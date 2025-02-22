@@ -15,7 +15,7 @@ const Index = () => {
           <div className="bg-gray-100 rounded-lg p-4 h-[200px]">
             <AIDebugWidget />
           </div>
-          <div className="bg-orange-100 rounded-lg p-4 flex-1">
+          <div className="bg-orange-100 rounded-lg p-4 flex-2">
             <ChatWidget />
           </div>
         </div>
