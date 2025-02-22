@@ -34,7 +34,7 @@ export const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action
                 id: stmt.id,
                 timestamp: new Date(stmt.timestamp).getTime(),
                 verb: stmt.verb.display['en-US'].toLowerCase(),
-                object: stmt.object.definition?.name['en-US'] || stmt.object.id,
+                object: stmt.object.id,
                 comment: stmt.result?.response || '',
                 grade: stmt.result?.score?.scaled ? Math.round(stmt.result.score.scaled * 10) : 5
               }));
@@ -66,7 +66,7 @@ export const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action
           id: statementId,
           timestamp: Date.now(),
           verb: action.payload.verb.display["en-US"].toLowerCase() as any,
-          object: action.payload.object.definition.name["en-US"],
+          object: action.payload.object.id,
           comment: action.payload.result?.response || '',
           grade: action.payload.result?.score?.scaled ? Math.round(action.payload.result.score.scaled * 10) : 5
         }
