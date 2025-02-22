@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
@@ -15,6 +15,13 @@ export const LearningStatementsWidget = () => {
     comment: '',
     grade: 5
   });
+
+  // Watch for changes in activeResourceLink
+  useEffect(() => {
+    if (state.activeResourceLink) {
+      handleLinkChange(state.activeResourceLink);
+    }
+  }, [state.activeResourceLink]);
 
   const handleSubmit = () => {
     if (!form.link) return; // Prevent submission without link
@@ -109,7 +116,7 @@ export const LearningStatementsWidget = () => {
           <input
             type="text"
             value={form.object}
-            readOnly
+            onChange={(e) => setForm(prev => ({ ...prev, object: e.target.value }))}
             placeholder=" "
             aria-labelledby="resource-title-label"
           />
