@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
+import './LearningStatementsWidget.css';
 
 export const LearningStatementsWidget = () => {
   const { state, dispatch } = useApp();
@@ -26,29 +27,29 @@ export const LearningStatementsWidget = () => {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <h2 className="text-lg font-semibold mb-4">Learning Statements</h2>
+    <div className="learning-statements-container">
+      <h2>Learning Statements</h2>
       
       {/* Display existing statements */}
-      <div className="flex-1 overflow-auto mb-4">
-        <div className="space-y-3">
+      <div className="statements-scroll-area">
+        <div className="statements-list">
           {state.learningStatements.map((statement) => (
-            <div key={statement.id} className="bg-white p-3 rounded-lg shadow-sm">
-              <div className="flex items-center gap-2">
-                <span className="font-medium capitalize">{statement.verb}</span>
-                <span className="text-muted-foreground">•</span>
+            <div key={statement.id} className="statement-card">
+              <div className="statement-header">
+                <span className="statement-verb">{statement.verb}</span>
+                <span className="separator">•</span>
                 <span>{statement.object}</span>
               </div>
               {statement.comment && (
-                <p className="text-sm text-muted-foreground mt-1">{statement.comment}</p>
+                <p className="statement-comment">{statement.comment}</p>
               )}
-              <div className="flex justify-between items-center mt-2">
-                <div className="text-sm text-muted-foreground">
+              <div className="statement-footer">
+                <div className="statement-timestamp">
                   {formatDistanceToNow(statement.timestamp, { addSuffix: true })}
                 </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-sm font-medium">Grade:</span>
-                  <span className="text-sm">{statement.grade}/10</span>
+                <div className="statement-grade">
+                  <span>Grade:</span>
+                  <span>{statement.grade}/10</span>
                 </div>
               </div>
             </div>
@@ -57,13 +58,12 @@ export const LearningStatementsWidget = () => {
       </div>
 
       {/* Form for adding new statements */}
-      <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium mb-1">Verb</label>
+      <div className="statement-form">
+        <div className="form-group">
+          <label>Verb</label>
           <select
             value={form.verb}
             onChange={(e) => setForm(prev => ({ ...prev, verb: e.target.value as any }))}
-            className="w-full p-2 rounded border"
           >
             <option value="watched">Watched</option>
             <option value="read">Read</option>
@@ -72,41 +72,38 @@ export const LearningStatementsWidget = () => {
           </select>
         </div>
         
-        <div>
-          <label className="block text-sm font-medium mb-1">Object</label>
+        <div className="form-group">
+          <label>Object</label>
           <input
             type="text"
             value={form.object}
             onChange={(e) => setForm(prev => ({ ...prev, object: e.target.value }))}
-            className="w-full p-2 rounded border"
             placeholder="Resource title or link"
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Comment</label>
+        <div className="form-group">
+          <label>Comment</label>
           <textarea
             value={form.comment}
             onChange={(e) => setForm(prev => ({ ...prev, comment: e.target.value }))}
-            className="w-full p-2 rounded border"
             rows={3}
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium mb-1">Grade (0-10)</label>
+        <div className="form-group">
+          <label>Grade (0-10)</label>
           <input
             type="range"
             min="0"
             max="10"
             value={form.grade}
             onChange={(e) => setForm(prev => ({ ...prev, grade: parseInt(e.target.value) }))}
-            className="w-full"
           />
-          <div className="text-center">{form.grade}</div>
+          <div className="grade-display">{form.grade}</div>
         </div>
 
-        <Button onClick={handleSubmit} className="w-full">
+        <Button onClick={handleSubmit} className="submit-button">
           Add Statement
         </Button>
       </div>
