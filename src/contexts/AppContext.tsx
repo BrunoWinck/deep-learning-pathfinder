@@ -22,8 +22,11 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   React.useEffect(() => {
     dispatch({ type: 'FETCH_STATEMENTS' });
 
-    // Initialize and start the learning coach
-    const coach = new LearningCoach(dispatch);
+    // Initialize and start the learning coach with access to state
+    const coach = new LearningCoach(
+      dispatch,
+      () => state // Provide a function to get latest state
+    );
     coach.start();
 
     // Cleanup when the component unmounts
