@@ -5,7 +5,7 @@
   --text-secondary: #6b7280;
   --bg-white: #ffffff;
   --border-color: #e5e7eb;
-  --spacing-unit: 1rem;
+  --spacing-unit: 0.5rem;
 }
 
 .learning-statements-container {
@@ -23,7 +23,7 @@
 
 .statements-scroll-area {
   flex: 1;
-  min-height: 0;
+  min-height: 100px;
   position: relative;
 }
 
@@ -91,20 +91,36 @@
 }
 
 .form-group {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
 .form-group label {
-  font-size: 0.875rem;
+  font-size: 0.75rem;
   font-weight: 500;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  position: absolute;
+  top: 0;
+  left: 0.5rem;
+  transform: translateY(0.75rem);
+  background: var(--bg-white);
+  padding: 0 0.25rem;
+}
+
+.form-group:focus-within label,
+.form-group input:not(:placeholder-shown) ~ label,
+.form-group textarea:not(:placeholder-shown) ~ label,
+.form-group select:not(:placeholder-shown) ~ label {
+  transform: translateY(-0.5rem) scale(0.85);
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: 0.5rem;
+  padding: 0.75rem 0.5rem;
   border: 1px solid var(--border-color);
   border-radius: 0.375rem;
   width: 100%;
@@ -112,6 +128,7 @@
 
 .form-group textarea {
   resize: vertical;
+  min-height: 60px;
 }
 
 .grade-display {
@@ -120,4 +137,19 @@
 
 .submit-button {
   width: 100%;
+}
+
+.link-button {
+  padding: 0.25rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.25rem;
+}
+
+.link-button:hover {
+  color: var(--primary-color);
+  background: rgba(99, 102, 241, 0.1);
 }

@@ -1,11 +1,10 @@
-
 import { useApp } from '@/contexts/AppContext';
 
 export const SearchDebugWidget = () => {
   const { state } = useApp();
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-[100px] overflow-auto bg-background p-2 text-xs font-mono">
       <h2 className="text-lg font-semibold mb-4">Search Debug</h2>
       <div className="flex-1 overflow-auto space-y-2">
         {state.searchQueries.map((query) => (

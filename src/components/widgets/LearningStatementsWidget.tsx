@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
+import { Link2 } from 'lucide-react';
 import './LearningStatementsWidget.css';
 
 export const LearningStatementsWidget = () => {
@@ -10,11 +11,13 @@ export const LearningStatementsWidget = () => {
   const [form, setForm] = useState({
     verb: 'watched' as const,
     object: '',
+    link: '',
     comment: '',
     grade: 5
   });
 
   const handleSubmit = () => {
+    if (!form.link) return; // Prevent submission without link
     dispatch({
       type: 'ADD_LEARNING_STATEMENT',
       payload: {
@@ -23,7 +26,18 @@ export const LearningStatementsWidget = () => {
         ...form
       }
     });
-    setForm({ verb: 'watched', object: '', comment: '', grade: 5 });
+    setForm({ verb: 'watched', object: '', link: '', comment: '', grade: 5 });
+  };
+
+  const handleLinkChange = (link: string) => {
+    // Extract title from link if possible (you might want to expand this logic)
+    const title = new URL(link).pathname.split('/').pop() || '';
+    setForm(prev => ({ ...prev, link, object: title }));
+  };
+
+  const copyStatementLink = (id: string) => {
+    const link = `https://lrs.com/statements/${id}`;
+    handleLinkChange(link);
   };
 
   return (
@@ -35,6 +49,13 @@ export const LearningStatementsWidget = () => {
           {state.learningStatements.map((statement) => (
             <div key={statement.id} className="statement-card">
               <div className="statement-header">
+                <button
+                  className="link-button"
+                  onClick={() => copyStatementLink(statement.id)}
+                  aria-label="Copy statement link"
+                >
+                  <Link2 size={16} />
+                </button>
                 <span className="statement-verb">{statement.verb}</span>
                 <span className="separator">•</span>
                 <span>{statement.object}</span>
@@ -58,7 +79,6 @@ export const LearningStatementsWidget = () => {
 
       <div className="statement-form" role="form" aria-label="Add learning statement">
         <div className="form-group">
-          <label id="statement-type-label">Statement type</label>
           <select
             value={form.verb}
             onChange={(e) => setForm(prev => ({ ...prev, verb: e.target.value as any }))}
@@ -70,31 +90,44 @@ export const LearningStatementsWidget = () => {
             <option value="quizzed">Quizzed</option>
             <option value="repeated">Repeated</option>
           </select>
+          <label id="statement-type-label">Statement type</label>
         </div>
         
         <div className="form-group">
-          <label id="resource-title-label">Resource title</label>
+          <input
+            type="url"
+            value={form.link}
+            onChange={(e) => handleLinkChange(e.target.value)}
+            placeholder=" "
+            aria-labelledby="resource-link-label"
+            required
+          />
+          <label id="resource-link-label">Resource link</label>
+        </div>
+
+        <div className="form-group">
           <input
             type="text"
             value={form.object}
-            onChange={(e) => setForm(prev => ({ ...prev, object: e.target.value }))}
-            placeholder="Resource title or link"
+            readOnly
+            placeholder=" "
             aria-labelledby="resource-title-label"
           />
+          <label id="resource-title-label">Resource title</label>
         </div>
 
         <div className="form-group">
-          <label id="statement-content-label">Statement content</label>
           <textarea
             value={form.comment}
             onChange={(e) => setForm(prev => ({ ...prev, comment: e.target.value }))}
-            rows={3}
+            rows={2}
+            placeholder=" "
             aria-labelledby="statement-content-label"
           />
+          <label id="statement-content-label">Statement content</label>
         </div>
 
         <div className="form-group">
-          <label id="grade-label">Grade (0-10)</label>
           <input
             type="range"
             min="0"
@@ -104,9 +137,14 @@ export const LearningStatementsWidget = () => {
             aria-labelledby="grade-label"
           />
           <div className="grade-display" aria-live="polite">{form.grade}</div>
+          <label id="grade-label">Grade (0-10)</label>
         </div>
 
-        <Button onClick={handleSubmit} className="submit-button">
+        <Button 
+          onClick={handleSubmit} 
+          className="submit-button" 
+          disabled={!form.link}
+        >
           Add Statement
         </Button>
       </div>
