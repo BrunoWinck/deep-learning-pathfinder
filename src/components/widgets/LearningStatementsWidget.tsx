@@ -1,8 +1,9 @@
+
 import { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
 import { formatDistanceToNow } from 'date-fns';
-import { Link2 } from 'lucide-react';
+import { Link2, ExternalLink } from 'lucide-react';
 import './LearningStatementsWidget.css';
 
 // xAPI Verb types based on ADL's standard verbs
@@ -148,7 +149,15 @@ export const LearningStatementsWidget = () => {
                 </button>
                 <span className="statement-verb">{statement.verb}</span>
                 <span className="separator">•</span>
-                <span>{statement.object}</span>
+                <a 
+                  href={statement.object} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="statement-object-link flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                >
+                  {statement.object}
+                  <ExternalLink size={14} />
+                </a>
               </div>
               {statement.comment && (
                 <p className="statement-comment">{statement.comment}</p>
