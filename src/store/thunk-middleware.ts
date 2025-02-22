@@ -13,8 +13,10 @@ export const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action
           'X-Experience-API-Version': '1.0.0'
         });
         
+        const agentFilter = "agent=%7B'mbox'%3A'mailto%3Abwmscormcloud%40kneaver.com'%7D";
+        
         toast.promise(
-          fetch(`${endpoint}/statements?limit=255`, { headers })
+          fetch(`${endpoint}/statements?limit=255&${agentFilter}`, { headers })
             .then(async response => {
               if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
