@@ -2,10 +2,12 @@
 import { useState, useEffect } from 'react';
 import { Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export const TitleBar = () => {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [timeOffset, setTimeOffset] = useState(0);
+  const [animate, setAnimate] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -17,6 +19,8 @@ export const TitleBar = () => {
 
   const advanceTime = (hours: number) => {
     setTimeOffset(prev => prev + (hours * 60 * 60 * 1000));
+    setAnimate(true);
+    setTimeout(() => setAnimate(false), 500); // Duration matches the CSS animation
   };
 
   return (
@@ -25,7 +29,10 @@ export const TitleBar = () => {
         Hackathon
       </div>
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
+        <div className={cn(
+          "flex items-center gap-2 px-3 py-2 rounded transition-colors duration-500",
+          animate && "bg-blue-100"
+        )}>
           <Clock className="h-5 w-5" />
           <span className="text-lg">
             {currentTime.toLocaleString('en-US', { 
