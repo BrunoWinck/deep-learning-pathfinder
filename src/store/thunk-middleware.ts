@@ -3,6 +3,8 @@ import { AppState, Action, AppAction } from '@/types/app-state';
 import { Dispatch } from 'react';
 import { toast } from 'sonner';
 
+const COMMENT_EXTENSION = 'http://www.kneaver.com/xapi/etensions/comment';
+
 export const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
   return async (action: AppAction) => {
     if (action.type === 'FETCH_STATEMENTS') {
@@ -35,7 +37,7 @@ export const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action
                 timestamp: new Date(stmt.timestamp).getTime(),
                 verb: stmt.verb.display['en-US'].toLowerCase(),
                 object: stmt.object.id,
-                comment: stmt.result?.response || '',
+                comment: stmt.result?.extensions?.[COMMENT_EXTENSION] || '',
                 grade: stmt.result?.score?.scaled ? Math.round(stmt.result.score.scaled * 10) : 5
               }));
 
@@ -59,6 +61,7 @@ export const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action
       }
     } else if (action.type === 'CREATE_STATEMENT') {
       const statementId = crypto.randomUUID();
+      const comment = action.payload.result?.response || '';
       
       dispatch({
         type: 'STATEMENT_PENDING',
@@ -67,7 +70,7 @@ export const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action
           timestamp: Date.now(),
           verb: action.payload.verb.display["en-US"].toLowerCase() as any,
           object: action.payload.object.id,
-          comment: action.payload.result?.response || '',
+          comment,
           grade: action.payload.result?.score?.scaled ? Math.round(action.payload.result.score.scaled * 10) : 5
         }
       });
@@ -88,7 +91,14 @@ export const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action
           },
           verb: action.payload.verb,
           object: action.payload.object,
-          result: action.payload.result
+          result: {
+            completion: true,
+            success: true,
+            score: action.payload.result?.score,
+            extensions: {
+              [COMMENT_EXTENSION]: comment
+            }
+          }
         };
 
         console.log('Sending statement:', statement);
