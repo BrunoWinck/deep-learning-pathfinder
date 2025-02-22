@@ -2,9 +2,9 @@
 import { AppAction, AppState } from '@/types/app-state';
 
 export class LearningCoach {
-  private greetingTimerId: number | null = null;
   private checkTimerId: number | null = null;
   private nudgedVideos: Set<string> = new Set();
+  start1 = Date.now();
 
   constructor(
     private dispatch: (action: AppAction) => void,
@@ -12,40 +12,40 @@ export class LearningCoach {
   ) {}
 
   start() {
-    // Initial greeting after 10 seconds
-    this.greetingTimerId = window.setTimeout(() => {
-      this.dispatch({
-        type: 'ADD_CHAT_MESSAGE',
-        payload: {
-          id: crypto.randomUUID(),
-          text: "Hi I'm your Learning coach",
-          isAI: true,
-          reactions: [],
-          timestamp: Date.now(),
-        },
-      });
-    }, 10000);
 
     // Start periodic check every 30 seconds
     this.checkTimerId = window.setInterval(() => {
-      this.checkForUnpracticedVideos();
-    }, 30000);
+      const state = this.getState();
+      const now = Date.now();
+      console.log( "agent check", now);
+      // Initial greeting after 10 seconds
+      if (!this.nudgedVideos.has( "greetings")) {
+        if ( now - this.start1 > 10000 ) {
+          this.nudgedVideos.add( "greetings");
+          this.dispatch({
+            type: 'ADD_CHAT_MESSAGE',
+            payload: {
+              id: crypto.randomUUID(),
+              text: "Hi I'm your Learning coach",
+              isAI: true,
+              reactions: [],
+              timestamp: Date.now(),
+            },
+          });
+        }
+      this.checkForUnpracticedVideos( now, state);
+      }
+    }, 10000);
   }
 
   stop() {
-    if (this.greetingTimerId !== null) {
-      window.clearTimeout(this.greetingTimerId);
-      this.greetingTimerId = null;
-    }
     if (this.checkTimerId !== null) {
       window.clearInterval(this.checkTimerId);
       this.checkTimerId = null;
     }
   }
 
-  private checkForUnpracticedVideos() {
-    const state = this.getState();
-    const now = Date.now();
+  private checkForUnpracticedVideos( now, state) {
     const twentyHoursAgo = now - (20 * 60 * 60 * 1000); // 20 hours in milliseconds
 
     // Get all watched statements from the last 20 hours
@@ -55,10 +55,14 @@ export class LearningCoach {
         stmt.timestamp > twentyHoursAgo
       );
 
+    console.log( "recentWatchedStatements", recentWatchedStatements.length);
     // For each watched statement, check if it needs practice
     recentWatchedStatements.forEach(watchedStmt => {
+      console.log( "check", watchedStmt.object);
+
       // Skip if we've already nudged about this video
       if (this.nudgedVideos.has(watchedStmt.object)) {
+        console.log( "already nudged", this.nudgedVideos, watchedStmt.object);
         return;
       }
 
@@ -67,6 +71,7 @@ export class LearningCoach {
         stmt.object === watchedStmt.object && 
         stmt.comment.trim().length > 0
       );
+      console.log( "relatedComments", relatedComments.length);
 
       // If less than 6 practice statements, send a nudge
       if (relatedComments.length < 6) {

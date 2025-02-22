@@ -103,23 +103,18 @@ export const ChatWidget = () => {
             </div>
             {msg.isAI && (
               <div className="flex gap-1 mt-1" role="group" aria-label="Message reactions">
-                {['❤️', '👍', '👎', '🙏'].map((reaction) => (
-                  <button
-                    key={reaction}
-                    onClick={() => addReaction(msg.id, reaction as '❤️' | '👍' | '👎' | '🙏')}
-                    className="hover:scale-125 transition-transform"
-                    aria-label={`React with ${reaction}`}
-                  >
-                    {reaction}
-                  </button>
-                ))}
-              </div>
-            )}
-            {msg.reactions.length > 0 && (
-              <div className="flex gap-1 mt-1" role="group" aria-label="Message reactions">
-                {msg.reactions.map((reaction, i) => (
-                  <span key={i} role="img" aria-label={`Reaction: ${reaction}`}>{reaction}</span>
-                ))}
+                {['❤️', '👍', '👎', '🙏'].map((reaction) => {
+                  const activated = msg.reactions.includes(reaction);
+                  return
+                    <button
+                      key={reaction}
+                      onClick={() => addReaction(msg.id, reaction as '❤️' | '👍' | '👎' | '🙏')}
+                      className="hover:scale-125 transition-transform"
+                      aria-label={`React with ${reaction}`}
+                    >
+                      {reaction}
+                    </button>
+                  })}
               </div>
             )}
           </div>
