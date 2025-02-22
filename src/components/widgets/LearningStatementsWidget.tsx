@@ -30,7 +30,6 @@ export const LearningStatementsWidget = () => {
     <div className="learning-statements-container">
       <h2>Learning Statements</h2>
       
-      {/* Display existing statements */}
       <div className="statements-scroll-area">
         <div className="statements-list">
           {state.learningStatements.map((statement) => (
@@ -57,13 +56,14 @@ export const LearningStatementsWidget = () => {
         </div>
       </div>
 
-      {/* Form for adding new statements */}
-      <div className="statement-form">
+      <div className="statement-form" role="form" aria-label="Add learning statement">
         <div className="form-group">
-          <label>Verb</label>
+          <label id="statement-type-label">Statement type</label>
           <select
             value={form.verb}
             onChange={(e) => setForm(prev => ({ ...prev, verb: e.target.value as any }))}
+            role="combobox"
+            aria-labelledby="statement-type-label"
           >
             <option value="watched">Watched</option>
             <option value="read">Read</option>
@@ -73,34 +73,37 @@ export const LearningStatementsWidget = () => {
         </div>
         
         <div className="form-group">
-          <label>Object</label>
+          <label id="resource-title-label">Resource title</label>
           <input
             type="text"
             value={form.object}
             onChange={(e) => setForm(prev => ({ ...prev, object: e.target.value }))}
             placeholder="Resource title or link"
+            aria-labelledby="resource-title-label"
           />
         </div>
 
         <div className="form-group">
-          <label>Comment</label>
+          <label id="statement-content-label">Statement content</label>
           <textarea
             value={form.comment}
             onChange={(e) => setForm(prev => ({ ...prev, comment: e.target.value }))}
             rows={3}
+            aria-labelledby="statement-content-label"
           />
         </div>
 
         <div className="form-group">
-          <label>Grade (0-10)</label>
+          <label id="grade-label">Grade (0-10)</label>
           <input
             type="range"
             min="0"
             max="10"
             value={form.grade}
             onChange={(e) => setForm(prev => ({ ...prev, grade: parseInt(e.target.value) }))}
+            aria-labelledby="grade-label"
           />
-          <div className="grade-display">{form.grade}</div>
+          <div className="grade-display" aria-live="polite">{form.grade}</div>
         </div>
 
         <Button onClick={handleSubmit} className="submit-button">

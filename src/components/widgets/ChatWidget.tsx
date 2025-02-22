@@ -71,7 +71,7 @@ export const ChatWidget = () => {
         <h2 className="text-lg font-semibold">Chat</h2>
         <div className="flex gap-2 items-center">
           {conversation.isSpeaking && (
-            <span className="text-sm text-muted-foreground animate-pulse">
+            <span className="text-sm text-muted-foreground animate-pulse" role="status" aria-live="polite">
               Speaking...
             </span>
           )}
@@ -79,36 +79,36 @@ export const ChatWidget = () => {
             variant="outline"
             size="sm"
             onClick={() => dispatch({ type: 'TOGGLE_VOICE', payload: !state.voiceEnabled })}
+            aria-pressed={state.voiceEnabled}
           >
             {state.voiceEnabled ? 'Mute' : 'Unmute'} Voice
           </Button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto space-y-4 mb-4">
+      <div className="flex-1 overflow-auto space-y-4 mb-4" role="log" aria-label="Chat messages">
         {state.chatMessages.map((msg) => (
           <div
             key={msg.id}
-            className={`flex flex-col ${
-              msg.isAI ? 'items-start' : 'items-end'
-            }`}
+            className={`flex flex-col ${msg.isAI ? 'items-start' : 'items-end'}`}
+            role="log"
+            aria-label={msg.isAI ? 'AI message' : 'User message'}
           >
             <div
               className={`p-3 rounded-lg max-w-[80%] ${
-                msg.isAI
-                  ? 'bg-background border'
-                  : 'bg-primary text-primary-foreground'
+                msg.isAI ? 'bg-background border' : 'bg-primary text-primary-foreground'
               }`}
             >
               {msg.text}
             </div>
             {msg.isAI && (
-              <div className="flex gap-1 mt-1">
+              <div className="flex gap-1 mt-1" role="group" aria-label="Message reactions">
                 {['❤️', '👍', '👎', '🙏'].map((reaction) => (
                   <button
                     key={reaction}
                     onClick={() => addReaction(msg.id, reaction as '❤️' | '👍' | '👎' | '🙏')}
                     className="hover:scale-125 transition-transform"
+                    aria-label={`React with ${reaction}`}
                   >
                     {reaction}
                   </button>
@@ -116,9 +116,9 @@ export const ChatWidget = () => {
               </div>
             )}
             {msg.reactions.length > 0 && (
-              <div className="flex gap-1 mt-1">
+              <div className="flex gap-1 mt-1" role="group" aria-label="Message reactions">
                 {msg.reactions.map((reaction, i) => (
-                  <span key={i}>{reaction}</span>
+                  <span key={i} role="img" aria-label={`Reaction: ${reaction}`}>{reaction}</span>
                 ))}
               </div>
             )}
@@ -126,25 +126,30 @@ export const ChatWidget = () => {
         ))}
       </div>
 
-      <div className="flex gap-2">
+      <form 
+        className="flex gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          if (message.trim()) {
+            addMessage(message, false);
+            setMessage('');
+          }
+        }}
+        role="form"
+        aria-label="Chat message form"
+      >
         <input
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           className="flex-1 px-3 py-2 rounded border"
           placeholder="Type a message..."
+          aria-label="Message input"
         />
-        <Button
-          onClick={() => {
-            if (message.trim()) {
-              addMessage(message, false);
-              setMessage('');
-            }
-          }}
-        >
+        <Button type="submit">
           Send
         </Button>
-      </div>
+      </form>
     </div>
   );
 };
