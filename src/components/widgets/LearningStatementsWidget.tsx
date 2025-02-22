@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
+import { formatDistanceToNow } from 'date-fns';
 
 export const LearningStatementsWidget = () => {
   const { state, dispatch } = useApp();
@@ -27,6 +28,35 @@ export const LearningStatementsWidget = () => {
   return (
     <div className="h-full flex flex-col">
       <h2 className="text-lg font-semibold mb-4">Learning Statements</h2>
+      
+      {/* Display existing statements */}
+      <div className="flex-1 overflow-auto mb-4">
+        <div className="space-y-3">
+          {state.learningStatements.map((statement) => (
+            <div key={statement.id} className="bg-white p-3 rounded-lg shadow-sm">
+              <div className="flex items-center gap-2">
+                <span className="font-medium capitalize">{statement.verb}</span>
+                <span className="text-muted-foreground">•</span>
+                <span>{statement.object}</span>
+              </div>
+              {statement.comment && (
+                <p className="text-sm text-muted-foreground mt-1">{statement.comment}</p>
+              )}
+              <div className="flex justify-between items-center mt-2">
+                <div className="text-sm text-muted-foreground">
+                  {formatDistanceToNow(statement.timestamp, { addSuffix: true })}
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="text-sm font-medium">Grade:</span>
+                  <span className="text-sm">{statement.grade}/10</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Form for adding new statements */}
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium mb-1">Verb</label>

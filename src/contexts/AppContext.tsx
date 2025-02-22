@@ -50,7 +50,32 @@ const initialState: AppState = {
   activePath: null,
   chatMessages: [],
   searchQueries: [],
-  learningStatements: [],
+  learningStatements: [
+    {
+      id: '1',
+      timestamp: Date.now() - 86400000, // 1 day ago
+      verb: 'watched',
+      object: 'Neural Networks Fundamentals Video',
+      comment: 'Great introduction to the basics of neural networks',
+      grade: 8
+    },
+    {
+      id: '2',
+      timestamp: Date.now() - 43200000, // 12 hours ago
+      verb: 'read',
+      object: 'Deep Learning Book Chapter 1',
+      comment: 'Complex but informative material on mathematical foundations',
+      grade: 7
+    },
+    {
+      id: '3',
+      timestamp: Date.now() - 3600000, // 1 hour ago
+      verb: 'quizzed',
+      object: 'Machine Learning Basics Quiz',
+      comment: 'Scored 85%, need to review gradient descent',
+      grade: 6
+    }
+  ],
   aiQueries: [],
   voiceEnabled: true,
 };
