@@ -86,24 +86,13 @@ export const LearningStatementsWidget = () => {
 
   const handleSubmit = () => {
     if (!form.object.id) return;
-    
-    const statement = {
-      id: crypto.randomUUID(),
-      timestamp: new Date().toISOString(),
-      verb: form.verb,
-      object: form.object,
-      result: form.result
-    };
 
     dispatch({
-      type: 'ADD_LEARNING_STATEMENT',
+      type: 'CREATE_STATEMENT',
       payload: {
-        id: statement.id,
-        timestamp: Date.now(),
-        verb: mapToAllowedVerb(form.verb.display["en-US"]),
-        object: form.object.definition.name["en-US"],
-        comment: form.result.response,
-        grade: Math.round(form.result.score.scaled * 10)
+        verb: form.verb,
+        object: form.object,
+        result: form.result
       }
     });
 

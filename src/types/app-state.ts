@@ -48,7 +48,6 @@ export type Action =
   | { type: 'ADD_CHAT_MESSAGE'; payload: AppState['chatMessages'][0] }
   | { type: 'ADD_REACTION'; payload: { messageId: string; reaction: '❤️' | '👍' | '👎' | '🙏' } }
   | { type: 'ADD_SEARCH_QUERY'; payload: AppState['searchQueries'][0] }
-  | { type: 'ADD_LEARNING_STATEMENT'; payload: AppState['learningStatements'][0] }
   | { type: 'ADD_AI_QUERY'; payload: AppState['aiQueries'][0] }
   | { type: 'SET_ACTIVE_RESOURCE_LINK'; payload: string | null }
   | { type: 'TOGGLE_VOICE'; payload: boolean }

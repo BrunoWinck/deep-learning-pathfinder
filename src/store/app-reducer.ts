@@ -20,8 +20,6 @@ export const appReducer = (state: AppState, action: Action): AppState => {
       };
     case 'ADD_SEARCH_QUERY':
       return { ...state, searchQueries: [...state.searchQueries, action.payload] };
-    case 'ADD_LEARNING_STATEMENT':
-      return { ...state, learningStatements: [...state.learningStatements, action.payload] };
     case 'ADD_AI_QUERY':
       return { ...state, aiQueries: [...state.aiQueries, action.payload] };
     case 'SET_ACTIVE_RESOURCE_LINK':
