@@ -9,7 +9,34 @@ export const ChatWidget = () => {
   const [message, setMessage] = useState('');
   const conversation = useConversation();
   
-  const addMessage = (text: string, isAI: boolean) => {
+  useEffect(() => {
+    // Initialize conversation when voice is enabled
+    if (state.voiceEnabled) {
+      const initConversation = async () => {
+        try {
+          await conversation.startSession({
+            agentId: "voice-chat-agent", // Replace with your actual agent ID from ElevenLabs
+            overrides: {
+              tts: {
+                voiceId: "EXAVITQu4vr4xnSDxMaL" // Using Sarah's voice
+              }
+            }
+          });
+        } catch (error) {
+          console.error("Failed to start conversation:", error);
+        }
+      };
+      initConversation();
+    } else {
+      conversation.endSession();
+    }
+    
+    return () => {
+      conversation.endSession();
+    };
+  }, [state.voiceEnabled]);
+
+  const addMessage = async (text: string, isAI: boolean) => {
     dispatch({
       type: 'ADD_CHAT_MESSAGE',
       payload: {
@@ -20,6 +47,15 @@ export const ChatWidget = () => {
         timestamp: Date.now(),
       },
     });
+
+    // If it's an AI message and voice is enabled, use text-to-speech
+    if (isAI && state.voiceEnabled) {
+      try {
+        await conversation.setVolume({ volume: 0.8 });
+      } catch (error) {
+        console.error("Failed to play voice:", error);
+      }
+    }
   };
 
   const addReaction = (messageId: string, reaction: '❤️' | '👍' | '👎' | '🙏') => {
@@ -33,13 +69,20 @@ export const ChatWidget = () => {
     <div className="h-full flex flex-col">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Chat</h2>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => dispatch({ type: 'TOGGLE_VOICE', payload: !state.voiceEnabled })}
-        >
-          {state.voiceEnabled ? 'Mute' : 'Unmute'} Voice
-        </Button>
+        <div className="flex gap-2 items-center">
+          {conversation.isSpeaking && (
+            <span className="text-sm text-muted-foreground animate-pulse">
+              Speaking...
+            </span>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => dispatch({ type: 'TOGGLE_VOICE', payload: !state.voiceEnabled })}
+          >
+            {state.voiceEnabled ? 'Mute' : 'Unmute'} Voice
+          </Button>
+        </div>
       </div>
 
       <div className="flex-1 overflow-auto space-y-4 mb-4">
