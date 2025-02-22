@@ -1,4 +1,5 @@
-import { useState } from 'react';
+
+import { useState, useEffect } from 'react';
 import { PlusCircle, Link2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts/AppContext';
@@ -7,6 +8,18 @@ import { PathItem } from './learning-paths/PathItem';
 import { SectionItem } from './learning-paths/SectionItem';
 import { StepItem } from './learning-paths/StepItem';
 import { NewStepForm } from './learning-paths/NewStepForm';
+
+// Interface for the persisted state
+interface PersistedState {
+  selectedPath: string | null;
+  focusedStep: {
+    pathId: string;
+    sectionId: string;
+    stepIndex: number;
+  } | null;
+}
+
+const STORAGE_KEY = 'learning_paths_state';
 
 export const LearningPathsWidget = () => {
   const { state, dispatch } = useApp();
@@ -18,7 +31,31 @@ export const LearningPathsWidget = () => {
   const [editingSectionName, setEditingSectionName] = useState('');
   const [editingStepName, setEditingStepName] = useState('');
   const [newStepText, setNewStepText] = useState('');
+  const [focusedStep, setFocusedStep] = useState<{
+    pathId: string;
+    sectionId: string;
+    stepIndex: number;
+  } | null>(null);
   let editTimer: ReturnType<typeof setTimeout>;
+
+  // Load persisted state on mount
+  useEffect(() => {
+    const savedState = localStorage.getItem(STORAGE_KEY);
+    if (savedState) {
+      const parsed = JSON.parse(savedState) as PersistedState;
+      setSelectedPath(parsed.selectedPath);
+      setFocusedStep(parsed.focusedStep);
+    }
+  }, []);
+
+  // Save state changes to localStorage
+  useEffect(() => {
+    const stateToSave: PersistedState = {
+      selectedPath,
+      focusedStep
+    };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+  }, [selectedPath, focusedStep]);
 
   const handleAddPath = () => {
     const newPath: LearningPath = {
@@ -130,10 +167,11 @@ export const LearningPathsWidget = () => {
     setNewStepText('');
   };
 
-  const handleStepLongPress = (step: string, index: number) => {
+  const handleStepLongPress = (step: string, index: number, pathId: string, sectionId: string) => {
     editTimer = setTimeout(() => {
       setEditingStepIndex(index);
       setEditingStepName(step);
+      setFocusedStep({ pathId, sectionId, stepIndex: index });
     }, 500);
   };
 
@@ -283,6 +321,14 @@ export const LearningPathsWidget = () => {
                           type="checkbox" 
                           className="rounded"
                           aria-label={`Mark step ${index + 1} as complete`}
+                          checked={focusedStep?.pathId === selectedPathData.id && 
+                                 focusedStep?.sectionId === section.id && 
+                                 focusedStep?.stepIndex === index}
+                          onChange={() => setFocusedStep({
+                            pathId: selectedPathData.id,
+                            sectionId: section.id,
+                            stepIndex: index
+                          })}
                         />
                         <StepItem
                           step={step}
@@ -291,7 +337,7 @@ export const LearningPathsWidget = () => {
                           editingName={editingStepName}
                           pathId={selectedPathData.id}
                           sectionId={section.id}
-                          onStepLongPress={handleStepLongPress}
+                          onStepLongPress={(step, index) => handleStepLongPress(step, index, selectedPathData.id, section.id)}
                           onPathTouchEnd={handlePathTouchEnd}
                           onStepNameUpdate={handleStepNameUpdate}
                           onEditingNameChange={setEditingStepName}
