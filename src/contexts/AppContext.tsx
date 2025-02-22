@@ -4,6 +4,7 @@ import { AppState, AppAction } from '@/types/app-state';
 import { initialState } from '@/store/initial-state';
 import { appReducer } from '@/store/app-reducer';
 import { createThunkMiddleware } from '@/store/thunk-middleware';
+import { LearningCoach } from '@/store/learning-coach';
 
 export const AppContext = createContext<{
   state: AppState;
@@ -20,6 +21,15 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
 
   React.useEffect(() => {
     dispatch({ type: 'FETCH_STATEMENTS' });
+
+    // Initialize and start the learning coach
+    const coach = new LearningCoach(dispatch);
+    coach.start();
+
+    // Cleanup when the component unmounts
+    return () => {
+      coach.stop();
+    };
   }, []);
 
   return (
