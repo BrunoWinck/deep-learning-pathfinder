@@ -65,6 +65,22 @@ export const ChatWidget = () => {
     });
   };
 
+  // Helper function to check if a reaction has been clicked
+  const isReactionClicked = (messageId: string, reaction: '❤️' | '👍' | '👎' | '🙏') => {
+    const message = state.chatMessages.find(msg => msg.id === messageId);
+    return message?.reactions.includes(reaction);
+  };
+
+  // Helper function to get reaction style based on clicked state
+  const getReactionStyle = (messageId: string, reaction: '❤️' | '👍' | '👎' | '🙏') => {
+    const clicked = isReactionClicked(messageId, reaction);
+    return {
+      color: clicked ? undefined : '#8E9196', // Grey when unclicked
+      opacity: clicked ? 1 : 0.7,
+      cursor: 'pointer',
+    };
+  };
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex justify-between items-center mb-4">
@@ -103,12 +119,14 @@ export const ChatWidget = () => {
             </div>
             {msg.isAI && (
               <div className="flex gap-1 mt-1" role="group" aria-label="Message reactions">
-                {['❤️', '👍', '👎', '🙏'].map((reaction) => (
+                {(['❤️', '👍', '👎', '🙏'] as const).map((reaction) => (
                   <button
                     key={reaction}
-                    onClick={() => addReaction(msg.id, reaction as '❤️' | '👍' | '👎' | '🙏')}
+                    onClick={() => addReaction(msg.id, reaction)}
                     className="hover:scale-125 transition-transform"
+                    style={getReactionStyle(msg.id, reaction)}
                     aria-label={`React with ${reaction}`}
+                    aria-pressed={isReactionClicked(msg.id, reaction)}
                   >
                     {reaction}
                   </button>
