@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
@@ -40,6 +39,20 @@ const STANDARD_VERBS = {
   repeated: "https://www.kneaver.com/xapi/verbs/repeated",
   realized: "https://www.kneaver.com/xapi/verbs/realized",
   remembered: "https://www.kneaver.com/xapi/verbs/remembered",
+};
+
+type AllowedVerb = 'watched' | 'read' | 'quizzed' | 'repeated' | 'realized' | 'remembered';
+
+const mapToAllowedVerb = (verb: string): AllowedVerb => {
+  const normalized = verb.toLowerCase();
+  if (isAllowedVerb(normalized)) {
+    return normalized;
+  }
+  return 'watched'; // Default fallback
+};
+
+const isAllowedVerb = (verb: string): verb is AllowedVerb => {
+  return ['watched', 'read', 'quizzed', 'repeated', 'realized', 'remembered'].includes(verb);
 };
 
 export const LearningStatementsWidget = () => {
@@ -87,7 +100,7 @@ export const LearningStatementsWidget = () => {
       payload: {
         id: statement.id,
         timestamp: Date.now(),
-        verb: form.verb.display["en-US"],
+        verb: mapToAllowedVerb(form.verb.display["en-US"]),
         object: form.object.definition.name["en-US"],
         comment: form.result.response,
         grade: Math.round(form.result.score.scaled * 10)
