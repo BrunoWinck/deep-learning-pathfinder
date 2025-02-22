@@ -7,11 +7,9 @@ import { PathItem } from './learning-paths/PathItem';
 import { SectionItem } from './learning-paths/SectionItem';
 import { StepItem } from './learning-paths/StepItem';
 import { NewStepForm } from './learning-paths/NewStepForm';
-import { useToast } from '@/components/ui/use-toast';
 
 export const LearningPathsWidget = () => {
   const { state, dispatch } = useApp();
-  const { toast } = useToast();
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [editingPath, setEditingPath] = useState<string | null>(null);
   const [editingSection, setEditingSection] = useState<string | null>(null);
@@ -163,12 +161,8 @@ export const LearningPathsWidget = () => {
     setEditingStepIndex(null);
   };
 
-  const setResourceLink = (link: string, title: string) => {
+  const setResourceLink = (link: string) => {
     dispatch({ type: 'SET_ACTIVE_RESOURCE_LINK', payload: link });
-    toast({
-      title: "Resource selected",
-      description: `Selected resource: ${title}`
-    });
   };
 
   const selectedPathData = state.learningPaths.find(p => p.id === selectedPath);
@@ -210,12 +204,19 @@ export const LearningPathsWidget = () => {
                     <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <button
                         className="p-1 hover:text-primary"
-                        onClick={() => setResourceLink(resource.link, resource.title)}
+                        onClick={() => setResourceLink(resource.link)}
                         aria-label={`Select ${resource.title} resource`}
                       >
                         <Link2 size={14} />
                       </button>
-                      <span>{resource.title}</span>
+                      <a 
+                        href={resource.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="hover:underline"
+                      >
+                        {resource.title}
+                      </a>
                     </div>
                   ))}
                 </div>
@@ -258,12 +259,19 @@ export const LearningPathsWidget = () => {
                         <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
                           <button
                             className="p-1 hover:text-primary"
-                            onClick={() => setResourceLink(resource.link, resource.title)}
+                            onClick={() => setResourceLink(resource.link)}
                             aria-label={`Select ${resource.title} resource`}
                           >
                             <Link2 size={14} />
                           </button>
-                          <span>{resource.title}</span>
+                          <a 
+                            href={resource.link} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="hover:underline"
+                          >
+                            {resource.title}
+                          </a>
                         </div>
                       ))}
                     </div>
