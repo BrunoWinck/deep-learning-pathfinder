@@ -1,8 +1,13 @@
+
 import { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts/AppContext';
 import { LearningPath, Section } from '@/types/learning';
+import { PathItem } from './learning-paths/PathItem';
+import { SectionItem } from './learning-paths/SectionItem';
+import { StepItem } from './learning-paths/StepItem';
+import { NewStepForm } from './learning-paths/NewStepForm';
 
 export const LearningPathsWidget = () => {
   const { state, dispatch } = useApp();
@@ -179,37 +184,17 @@ export const LearningPathsWidget = () => {
         <div className="space-y-2 mb-4" role="list" aria-label="Learning paths">
           {state.learningPaths.map((path) => (
             <div key={path.id} role="listitem">
-              {editingPath === path.id ? (
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={editingName}
-                    onChange={(e) => setEditingName(e.target.value)}
-                    className="flex-1 p-2 rounded border"
-                    autoFocus
-                    aria-label="Path name"
-                  />
-                  <Button size="sm" onClick={() => handleNameUpdate(path.id)}>
-                    Save
-                  </Button>
-                </div>
-              ) : (
-                <button
-                  onClick={() => handlePathClick(path.id)}
-                  onTouchStart={() => handlePathLongPress(path)}
-                  onTouchEnd={handlePathTouchEnd}
-                  onMouseDown={() => handlePathLongPress(path)}
-                  onMouseUp={handlePathTouchEnd}
-                  onMouseLeave={handlePathTouchEnd}
-                  className={`w-full text-left p-2 rounded ${
-                    selectedPath === path.id ? 'bg-accent' : 'hover:bg-accent/50'
-                  }`}
-                  role="button"
-                  aria-selected={selectedPath === path.id}
-                >
-                  {path.name}
-                </button>
-              )}
+              <PathItem
+                path={path}
+                isSelected={selectedPath === path.id}
+                isEditing={editingPath === path.id}
+                editingName={editingName}
+                onPathClick={handlePathClick}
+                onPathLongPress={handlePathLongPress}
+                onPathTouchEnd={handlePathTouchEnd}
+                onNameUpdate={handleNameUpdate}
+                onEditingNameChange={setEditingName}
+              />
             </div>
           ))}
         </div>
@@ -232,37 +217,16 @@ export const LearningPathsWidget = () => {
             <div className="space-y-2" role="list" aria-label="Sections">
               {selectedPathData.sections.map((section) => (
                 <div key={section.id} className="p-2 bg-background rounded border" role="listitem">
-                  {editingSection === section.id ? (
-                    <div className="flex gap-2 mb-2">
-                      <input
-                        type="text"
-                        value={editingSectionName}
-                        onChange={(e) => setEditingSectionName(e.target.value)}
-                        className="flex-1 p-2 rounded border"
-                        autoFocus
-                        aria-label="Section name"
-                      />
-                      <Button
-                        size="sm"
-                        onClick={() => handleSectionNameUpdate(selectedPathData.id, section.id)}
-                      >
-                        Save
-                      </Button>
-                    </div>
-                  ) : (
-                    <h4
-                      className="font-medium mb-2 cursor-pointer"
-                      onTouchStart={() => handleSectionLongPress(section)}
-                      onTouchEnd={handlePathTouchEnd}
-                      onMouseDown={() => handleSectionLongPress(section)}
-                      onMouseUp={handlePathTouchEnd}
-                      onMouseLeave={handlePathTouchEnd}
-                      role="heading"
-                      aria-level={4}
-                    >
-                      {section.name}
-                    </h4>
-                  )}
+                  <SectionItem
+                    section={section}
+                    isEditing={editingSection === section.id}
+                    editingName={editingSectionName}
+                    pathId={selectedPathData.id}
+                    onSectionLongPress={handleSectionLongPress}
+                    onPathTouchEnd={handlePathTouchEnd}
+                    onSectionNameUpdate={handleSectionNameUpdate}
+                    onEditingNameChange={setEditingSectionName}
+                  />
                   <div className="mt-2 space-y-1" role="list" aria-label="Steps">
                     {section.steps.map((step, index) => (
                       <div key={index} className="flex items-center gap-2" role="listitem">
@@ -271,54 +235,25 @@ export const LearningPathsWidget = () => {
                           className="rounded"
                           aria-label={`Mark step ${index + 1} as complete`}
                         />
-                        {editingStepIndex === index ? (
-                          <div className="flex flex-1 gap-2">
-                            <input
-                              type="text"
-                              value={editingStepName}
-                              onChange={(e) => setEditingStepName(e.target.value)}
-                              className="flex-1 p-1 rounded border text-sm"
-                              autoFocus
-                              aria-label="Step name"
-                            />
-                            <Button
-                              size="sm"
-                              onClick={() => handleStepNameUpdate(selectedPathData.id, section.id, index)}
-                            >
-                              Save
-                            </Button>
-                          </div>
-                        ) : (
-                          <span
-                            className="flex-1 cursor-pointer"
-                            onTouchStart={() => handleStepLongPress(step, index)}
-                            onTouchEnd={handlePathTouchEnd}
-                            onMouseDown={() => handleStepLongPress(step, index)}
-                            onMouseUp={handlePathTouchEnd}
-                            onMouseLeave={handlePathTouchEnd}
-                            role="button"
-                          >
-                            {step}
-                          </span>
-                        )}
+                        <StepItem
+                          step={step}
+                          index={index}
+                          isEditing={editingStepIndex === index}
+                          editingName={editingStepName}
+                          pathId={selectedPathData.id}
+                          sectionId={section.id}
+                          onStepLongPress={handleStepLongPress}
+                          onPathTouchEnd={handlePathTouchEnd}
+                          onStepNameUpdate={handleStepNameUpdate}
+                          onEditingNameChange={setEditingStepName}
+                        />
                       </div>
                     ))}
-                    <div className="flex gap-2 mt-2">
-                      <input
-                        type="text"
-                        value={newStepText}
-                        onChange={(e) => setNewStepText(e.target.value)}
-                        placeholder="New step..."
-                        className="flex-1 p-2 rounded border"
-                        aria-label="New step"
-                      />
-                      <Button
-                        size="sm"
-                        onClick={() => handleAddStep(selectedPathData.id, section.id)}
-                      >
-                        Add
-                      </Button>
-                    </div>
+                    <NewStepForm
+                      newStepText={newStepText}
+                      onNewStepTextChange={setNewStepText}
+                      onAddStep={() => handleAddStep(selectedPathData.id, section.id)}
+                    />
                   </div>
                 </div>
               ))}
