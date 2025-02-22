@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,8 +9,10 @@ export const LearningPathsWidget = () => {
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [editingPath, setEditingPath] = useState<string | null>(null);
   const [editingSection, setEditingSection] = useState<string | null>(null);
+  const [editingStepIndex, setEditingStepIndex] = useState<number | null>(null);
   const [editingName, setEditingName] = useState('');
   const [editingSectionName, setEditingSectionName] = useState('');
+  const [editingStepName, setEditingStepName] = useState('');
   const [newStepText, setNewStepText] = useState('');
   let editTimer: ReturnType<typeof setTimeout>;
 
@@ -125,6 +126,37 @@ export const LearningPathsWidget = () => {
     setNewStepText('');
   };
 
+  const handleStepLongPress = (step: string, index: number) => {
+    editTimer = setTimeout(() => {
+      setEditingStepIndex(index);
+      setEditingStepName(step);
+    }, 500);
+  };
+
+  const handleStepNameUpdate = (pathId: string, sectionId: string, stepIndex: number) => {
+    const updatedPaths = state.learningPaths.map(path => {
+      if (path.id === pathId) {
+        return {
+          ...path,
+          sections: path.sections.map(section => {
+            if (section.id === sectionId) {
+              const updatedSteps = [...section.steps];
+              updatedSteps[stepIndex] = editingStepName;
+              return {
+                ...section,
+                steps: updatedSteps
+              };
+            }
+            return section;
+          })
+        };
+      }
+      return path;
+    });
+    dispatch({ type: 'SET_LEARNING_PATHS', payload: updatedPaths });
+    setEditingStepIndex(null);
+  };
+
   const selectedPathData = state.learningPaths.find(p => p.id === selectedPath);
 
   return (
@@ -227,7 +259,34 @@ export const LearningPathsWidget = () => {
                     {section.steps.map((step, index) => (
                       <div key={index} className="flex items-center gap-2">
                         <input type="checkbox" className="rounded" />
-                        <span>{step}</span>
+                        {editingStepIndex === index ? (
+                          <div className="flex flex-1 gap-2">
+                            <input
+                              type="text"
+                              value={editingStepName}
+                              onChange={(e) => setEditingStepName(e.target.value)}
+                              className="flex-1 p-1 rounded border text-sm"
+                              autoFocus
+                            />
+                            <Button
+                              size="sm"
+                              onClick={() => handleStepNameUpdate(selectedPathData.id, section.id, index)}
+                            >
+                              Save
+                            </Button>
+                          </div>
+                        ) : (
+                          <span
+                            className="flex-1 cursor-pointer"
+                            onTouchStart={() => handleStepLongPress(step, index)}
+                            onTouchEnd={handlePathTouchEnd}
+                            onMouseDown={() => handleStepLongPress(step, index)}
+                            onMouseUp={handlePathTouchEnd}
+                            onMouseLeave={handlePathTouchEnd}
+                          >
+                            {step}
+                          </span>
+                        )}
                       </div>
                     ))}
                     <div className="flex gap-2 mt-2">
