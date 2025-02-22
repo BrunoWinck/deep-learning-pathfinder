@@ -132,11 +132,8 @@
 }
 
 .grade-display {
-  text-align: center;
-}
-
-.submit-button {
-  width: 100%;
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
 .link-button {

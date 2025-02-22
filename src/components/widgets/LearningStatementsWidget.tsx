@@ -77,7 +77,7 @@ export const LearningStatementsWidget = () => {
         </div>
       </div>
 
-      <div className="statement-form" role="form" aria-label="Add learning statement">
+      <div className="statement-form" role="form" aria-label="Add statement">
         <div className="form-group">
           <select
             value={form.verb}
@@ -128,25 +128,28 @@ export const LearningStatementsWidget = () => {
         </div>
 
         <div className="form-group">
-          <input
-            type="range"
-            min="0"
-            max="10"
-            value={form.grade}
-            onChange={(e) => setForm(prev => ({ ...prev, grade: parseInt(e.target.value) }))}
-            aria-labelledby="grade-label"
-          />
-          <div className="grade-display" aria-live="polite">{form.grade}</div>
+          <div className="flex items-center gap-4">
+            <div className="grade-display w-8 text-center" aria-live="polite">
+              {form.grade}
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="10"
+              value={form.grade}
+              onChange={(e) => setForm(prev => ({ ...prev, grade: parseInt(e.target.value) }))}
+              aria-labelledby="grade-label"
+              className="flex-1"
+            />
+            <Button 
+              onClick={handleSubmit} 
+              disabled={!form.link}
+            >
+              Add
+            </Button>
+          </div>
           <label id="grade-label">Grade (0-10)</label>
         </div>
-
-        <Button 
-          onClick={handleSubmit} 
-          className="submit-button" 
-          disabled={!form.link}
-        >
-          Add Statement
-        </Button>
       </div>
     </div>
   );
