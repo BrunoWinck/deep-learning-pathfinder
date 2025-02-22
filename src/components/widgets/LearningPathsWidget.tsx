@@ -3,13 +3,16 @@ import { useState } from 'react';
 import { PlusCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts/AppContext';
-import { LearningPath } from '@/types/learning';
+import { LearningPath, Section } from '@/types/learning';
 
 export const LearningPathsWidget = () => {
   const { state, dispatch } = useApp();
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [editingPath, setEditingPath] = useState<string | null>(null);
+  const [editingSection, setEditingSection] = useState<string | null>(null);
   const [editingName, setEditingName] = useState('');
+  const [editingSectionName, setEditingSectionName] = useState('');
+  const [newStepText, setNewStepText] = useState('');
   let editTimer: ReturnType<typeof setTimeout>;
 
   const handleAddPath = () => {
@@ -39,6 +42,13 @@ export const LearningPathsWidget = () => {
     }, 500);
   };
 
+  const handleSectionLongPress = (section: Section) => {
+    editTimer = setTimeout(() => {
+      setEditingSection(section.id);
+      setEditingSectionName(section.name);
+    }, 500);
+  };
+
   const handlePathTouchEnd = () => {
     clearTimeout(editTimer);
   };
@@ -49,6 +59,70 @@ export const LearningPathsWidget = () => {
     );
     dispatch({ type: 'SET_LEARNING_PATHS', payload: updatedPaths });
     setEditingPath(null);
+  };
+
+  const handleSectionNameUpdate = (pathId: string, sectionId: string) => {
+    const updatedPaths = state.learningPaths.map(path => {
+      if (path.id === pathId) {
+        return {
+          ...path,
+          sections: path.sections.map(section =>
+            section.id === sectionId ? { ...section, name: editingSectionName } : section
+          )
+        };
+      }
+      return path;
+    });
+    dispatch({ type: 'SET_LEARNING_PATHS', payload: updatedPaths });
+    setEditingSection(null);
+  };
+
+  const handleAddSection = (pathId: string) => {
+    const newSection: Section = {
+      id: crypto.randomUUID(),
+      name: "New Section",
+      body: "",
+      steps: [],
+      goals: [],
+      resources: []
+    };
+
+    const updatedPaths = state.learningPaths.map(path => {
+      if (path.id === pathId) {
+        return {
+          ...path,
+          sections: [...path.sections, newSection]
+        };
+      }
+      return path;
+    });
+
+    dispatch({ type: 'SET_LEARNING_PATHS', payload: updatedPaths });
+  };
+
+  const handleAddStep = (pathId: string, sectionId: string) => {
+    if (!newStepText.trim()) return;
+
+    const updatedPaths = state.learningPaths.map(path => {
+      if (path.id === pathId) {
+        return {
+          ...path,
+          sections: path.sections.map(section => {
+            if (section.id === sectionId) {
+              return {
+                ...section,
+                steps: [...section.steps, newStepText]
+              };
+            }
+            return section;
+          })
+        };
+      }
+      return path;
+    });
+
+    dispatch({ type: 'SET_LEARNING_PATHS', payload: updatedPaths });
+    setNewStepText('');
   };
 
   const selectedPathData = state.learningPaths.find(p => p.id === selectedPath);
@@ -106,11 +180,49 @@ export const LearningPathsWidget = () => {
 
         {selectedPathData && (
           <div className="mt-4 space-y-4">
-            <h3 className="font-medium">Path Details</h3>
+            <div className="flex justify-between items-center">
+              <h3 className="font-medium">Path Details</h3>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => handleAddSection(selectedPathData.id)}
+                className="flex items-center gap-1"
+              >
+                <PlusCircle className="h-4 w-4" />
+                Add Section
+              </Button>
+            </div>
             <div className="space-y-2">
               {selectedPathData.sections.map((section) => (
                 <div key={section.id} className="p-2 bg-background rounded border">
-                  <h4 className="font-medium">{section.name}</h4>
+                  {editingSection === section.id ? (
+                    <div className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        value={editingSectionName}
+                        onChange={(e) => setEditingSectionName(e.target.value)}
+                        className="flex-1 p-2 rounded border"
+                        autoFocus
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() => handleSectionNameUpdate(selectedPathData.id, section.id)}
+                      >
+                        Save
+                      </Button>
+                    </div>
+                  ) : (
+                    <h4
+                      className="font-medium mb-2 cursor-pointer"
+                      onTouchStart={() => handleSectionLongPress(section)}
+                      onTouchEnd={handlePathTouchEnd}
+                      onMouseDown={() => handleSectionLongPress(section)}
+                      onMouseUp={handlePathTouchEnd}
+                      onMouseLeave={handlePathTouchEnd}
+                    >
+                      {section.name}
+                    </h4>
+                  )}
                   <div className="mt-2 space-y-1">
                     {section.steps.map((step, index) => (
                       <div key={index} className="flex items-center gap-2">
@@ -118,6 +230,21 @@ export const LearningPathsWidget = () => {
                         <span>{step}</span>
                       </div>
                     ))}
+                    <div className="flex gap-2 mt-2">
+                      <input
+                        type="text"
+                        value={newStepText}
+                        onChange={(e) => setNewStepText(e.target.value)}
+                        placeholder="New step..."
+                        className="flex-1 p-2 rounded border"
+                      />
+                      <Button
+                        size="sm"
+                        onClick={() => handleAddStep(selectedPathData.id, section.id)}
+                      >
+                        Add
+                      </Button>
+                    </div>
                   </div>
                 </div>
               ))}
