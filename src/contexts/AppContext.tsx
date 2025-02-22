@@ -21,7 +21,7 @@ interface AppState {
   learningStatements: Array<{
     id: string;
     timestamp: number;
-    verb: 'watched' | 'read' | 'quizzed' | 'repeated';
+    verb: 'watched' | 'read' | 'quizzed' | 'repeated'| 'realized'| 'remembered';
     object: string;
     comment: string;
     grade: number;
@@ -46,7 +46,24 @@ type Action =
   | { type: 'TOGGLE_VOICE'; payload: boolean };
 
 const initialState: AppState = {
-  learningPaths: [],
+  learningPaths: [
+    {
+      id: "1",
+      name: "AI Agent",
+      body: "My path to learn to code AI Agent",
+      sections: [
+        {
+          id: "2",
+          name: "overview",
+          body: "waatch a few videos to get an idea of the topic",
+          resources: [
+            "https://www.youtube.com/watch?v=TfqioNAP1W4"
+          ]
+        }
+      ],
+      resources: [],
+    }
+  ],
   activePath: null,
   chatMessages: [],
   searchQueries: [],
