@@ -15,18 +15,18 @@ const Index = () => {
           <LearningPathsWidget />
         </div>
         <div className="space-y-4">
-          <div className="bg-gray-100 rounded-lg p-4">
+          <div className="bg-gray-100 rounded-lg p-4 h-[400px]">
             <AIDebugWidget />
           </div>
-          <div className="bg-orange-100 rounded-lg p-4">
+          <div className="bg-orange-100 rounded-lg p-4 flex-1">
             <ChatWidget />
           </div>
         </div>
         <div className="space-y-4">
-          <div className="bg-green-100 rounded-lg p-4">
+          <div className="bg-green-100 rounded-lg p-4 h-[400px]">
             <SearchDebugWidget />
           </div>
-          <div className="bg-violet-100 rounded-lg p-4">
+          <div className="bg-violet-100 rounded-lg p-4 flex-1">
             <LearningStatementsWidget />
           </div>
         </div>
