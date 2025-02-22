@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
 import { LearningPath } from '@/types/learning';
 
@@ -55,13 +54,19 @@ const initialState: AppState = {
         {
           id: "2",
           name: "overview",
-          body: "waatch a few videos to get an idea of the topic",
+          body: "watch a few videos to get an idea of the topic",
+          steps: [],
+          goals: [],
           resources: [
-            "https://www.youtube.com/watch?v=TfqioNAP1W4"
+            {
+              title: "Introduction to AI Agents",
+              link: "https://www.youtube.com/watch?v=TfqioNAP1W4"
+            }
           ]
         }
       ],
-      resources: [],
+      goals: [],
+      resources: []
     }
   ],
   activePath: null,
