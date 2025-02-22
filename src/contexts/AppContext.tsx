@@ -34,6 +34,13 @@ interface AppState {
   }>;
   voiceEnabled: boolean;
   activeResourceLink: string | null;
+  xAPIConfig: {
+    endpoint: string;
+    credentials: {
+      username: string;
+      password: string;
+    };
+  };
 }
 
 type Action = 
@@ -45,7 +52,11 @@ type Action =
   | { type: 'ADD_LEARNING_STATEMENT'; payload: AppState['learningStatements'][0] }
   | { type: 'ADD_AI_QUERY'; payload: AppState['aiQueries'][0] }
   | { type: 'SET_ACTIVE_RESOURCE_LINK'; payload: string | null }
-  | { type: 'TOGGLE_VOICE'; payload: boolean };
+  | { type: 'TOGGLE_VOICE'; payload: boolean }
+  | { type: 'HYDRATE_STATEMENTS'; payload: AppState['learningStatements'] };
+
+type AsyncAction = { type: 'FETCH_STATEMENTS' };
+type AppAction = Action | AsyncAction;
 
 const initialState: AppState = {
   learningPaths: [
@@ -75,35 +86,17 @@ const initialState: AppState = {
   activePath: null,
   chatMessages: [],
   searchQueries: [],
-  learningStatements: [
-    {
-      id: '1',
-      timestamp: Date.now() - 86400000,
-      verb: 'watched',
-      object: 'Neural Networks Fundamentals Video',
-      comment: 'Great introduction to the basics of neural networks',
-      grade: 8
-    },
-    {
-      id: '2',
-      timestamp: Date.now() - 43200000,
-      verb: 'read',
-      object: 'Deep Learning Book Chapter 1',
-      comment: 'Complex but informative material on mathematical foundations',
-      grade: 7
-    },
-    {
-      id: '3',
-      timestamp: Date.now() - 3600000,
-      verb: 'quizzed',
-      object: 'Machine Learning Basics Quiz',
-      comment: 'Scored 85%, need to review gradient descent',
-      grade: 6
-    }
-  ],
+  learningStatements: [],
   aiQueries: [],
   voiceEnabled: true,
   activeResourceLink: null,
+  xAPIConfig: {
+    endpoint: 'https://cloud.scorm.com/lrs/PMOJRBY6QG',
+    credentials: {
+      username: 'bwmscormcloud@kneaver.com',
+      password: 'lO369e1^{g(0'
+    }
+  }
 };
 
 const appReducer = (state: AppState, action: Action): AppState => {
@@ -133,18 +126,70 @@ const appReducer = (state: AppState, action: Action): AppState => {
       return { ...state, activeResourceLink: action.payload };
     case 'TOGGLE_VOICE':
       return { ...state, voiceEnabled: action.payload };
+    case 'HYDRATE_STATEMENTS':
+      return { ...state, learningStatements: action.payload };
     default:
       return state;
   }
 };
 
-const AppContext = createContext<{
+// Middleware to handle async actions
+const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
+  return async (action: AppAction) => {
+    if (action.type === 'FETCH_STATEMENTS') {
+      try {
+        const { endpoint, credentials } = state.xAPIConfig;
+        const headers = new Headers();
+        headers.set('Authorization', 'Basic ' + btoa(`${credentials.username}:${credentials.password}`));
+        
+        const response = await fetch(`${endpoint}/statements?limit=255`, {
+          headers
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const statements = await response.json();
+        
+        // Transform xAPI statements to our format
+        const transformedStatements = statements.map((stmt: any) => ({
+          id: stmt.id,
+          timestamp: new Date(stmt.timestamp).getTime(),
+          verb: stmt.verb.display['en-US'].toLowerCase(),
+          object: stmt.object.definition?.name['en-US'] || stmt.object.id,
+          comment: stmt.result?.response || '',
+          grade: stmt.result?.score?.scaled ? Math.round(stmt.result.score.scaled * 10) : 5
+        }));
+
+        dispatch({ type: 'HYDRATE_STATEMENTS', payload: transformedStatements });
+      } catch (error) {
+        console.error('Failed to fetch xAPI statements:', error);
+      }
+    } else {
+      dispatch(action as Action);
+    }
+  };
+};
+
+export const AppContext = createContext<{
   state: AppState;
-  dispatch: Dispatch<Action>;
+  dispatch: (action: AppAction) => void;
 } | null>(null);
 
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
-  const [state, dispatch] = useReducer(appReducer, initialState);
+  const [state, baseDispatch] = useReducer(appReducer, initialState);
+  
+  // Wrap dispatch with middleware
+  const dispatch = (action: AppAction) => {
+    const thunkDispatch = createThunkMiddleware(state, baseDispatch);
+    thunkDispatch(action);
+  };
+
+  // Fetch statements when provider mounts
+  React.useEffect(() => {
+    dispatch({ type: 'FETCH_STATEMENTS' });
+  }, []);
 
   return (
     <AppContext.Provider value={{ state, dispatch }}>
