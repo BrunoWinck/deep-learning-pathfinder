@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Link2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts/AppContext';
 import { LearningPath, Section } from '@/types/learning';
@@ -8,9 +7,11 @@ import { PathItem } from './learning-paths/PathItem';
 import { SectionItem } from './learning-paths/SectionItem';
 import { StepItem } from './learning-paths/StepItem';
 import { NewStepForm } from './learning-paths/NewStepForm';
+import { useToast } from '@/components/ui/use-toast';
 
 export const LearningPathsWidget = () => {
   const { state, dispatch } = useApp();
+  const { toast } = useToast();
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [editingPath, setEditingPath] = useState<string | null>(null);
   const [editingSection, setEditingSection] = useState<string | null>(null);
@@ -162,6 +163,14 @@ export const LearningPathsWidget = () => {
     setEditingStepIndex(null);
   };
 
+  const copyResourceLink = (link: string) => {
+    navigator.clipboard.writeText(link);
+    toast({
+      title: "Link copied",
+      description: "Resource link has been copied to clipboard"
+    });
+  };
+
   const selectedPathData = state.learningPaths.find(p => p.id === selectedPath);
 
   return (
@@ -195,6 +204,22 @@ export const LearningPathsWidget = () => {
                 onNameUpdate={handleNameUpdate}
                 onEditingNameChange={setEditingName}
               />
+              {path.resources.length > 0 && (
+                <div className="ml-4 mt-1 space-y-1">
+                  {path.resources.map((resource, index) => (
+                    <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <button
+                        className="p-1 hover:text-primary"
+                        onClick={() => copyResourceLink(resource.link)}
+                        aria-label={`Copy ${resource.title} link`}
+                      >
+                        <Link2 size={14} />
+                      </button>
+                      <span>{resource.title}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
@@ -227,6 +252,22 @@ export const LearningPathsWidget = () => {
                     onSectionNameUpdate={handleSectionNameUpdate}
                     onEditingNameChange={setEditingSectionName}
                   />
+                  {section.resources.length > 0 && (
+                    <div className="ml-4 mb-2 space-y-1">
+                      {section.resources.map((resource, index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <button
+                            className="p-1 hover:text-primary"
+                            onClick={() => copyResourceLink(resource.link)}
+                            aria-label={`Copy ${resource.title} link`}
+                          >
+                            <Link2 size={14} />
+                          </button>
+                          <span>{resource.title}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   <div className="mt-2 space-y-1" role="list" aria-label="Steps">
                     {section.steps.map((step, index) => (
                       <div key={index} className="flex items-center gap-2" role="listitem">

@@ -5,7 +5,10 @@ export interface Section {
   body: string;
   steps: string[];
   goals: string[];
-  resources: string[];
+  resources: Array<{
+    title: string;
+    link: string;
+  }>;
 }
 
 export interface LearningPath {
@@ -14,5 +17,8 @@ export interface LearningPath {
   body: string;
   sections: Section[];
   goals: string[];
-  resources: string[];
+  resources: Array<{
+    title: string;
+    link: string;
+  }>;
 }
