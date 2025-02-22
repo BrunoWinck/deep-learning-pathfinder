@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
 import { LearningPath } from '@/types/learning';
 
@@ -32,6 +33,7 @@ interface AppState {
     timestamp: number;
   }>;
   voiceEnabled: boolean;
+  activeResourceLink: string | null;
 }
 
 type Action = 
@@ -42,6 +44,7 @@ type Action =
   | { type: 'ADD_SEARCH_QUERY'; payload: AppState['searchQueries'][0] }
   | { type: 'ADD_LEARNING_STATEMENT'; payload: AppState['learningStatements'][0] }
   | { type: 'ADD_AI_QUERY'; payload: AppState['aiQueries'][0] }
+  | { type: 'SET_ACTIVE_RESOURCE_LINK'; payload: string | null }
   | { type: 'TOGGLE_VOICE'; payload: boolean };
 
 const initialState: AppState = {
@@ -75,7 +78,7 @@ const initialState: AppState = {
   learningStatements: [
     {
       id: '1',
-      timestamp: Date.now() - 86400000, // 1 day ago
+      timestamp: Date.now() - 86400000,
       verb: 'watched',
       object: 'Neural Networks Fundamentals Video',
       comment: 'Great introduction to the basics of neural networks',
@@ -83,7 +86,7 @@ const initialState: AppState = {
     },
     {
       id: '2',
-      timestamp: Date.now() - 43200000, // 12 hours ago
+      timestamp: Date.now() - 43200000,
       verb: 'read',
       object: 'Deep Learning Book Chapter 1',
       comment: 'Complex but informative material on mathematical foundations',
@@ -91,7 +94,7 @@ const initialState: AppState = {
     },
     {
       id: '3',
-      timestamp: Date.now() - 3600000, // 1 hour ago
+      timestamp: Date.now() - 3600000,
       verb: 'quizzed',
       object: 'Machine Learning Basics Quiz',
       comment: 'Scored 85%, need to review gradient descent',
@@ -100,6 +103,7 @@ const initialState: AppState = {
   ],
   aiQueries: [],
   voiceEnabled: true,
+  activeResourceLink: null,
 };
 
 const appReducer = (state: AppState, action: Action): AppState => {
@@ -125,6 +129,8 @@ const appReducer = (state: AppState, action: Action): AppState => {
       return { ...state, learningStatements: [...state.learningStatements, action.payload] };
     case 'ADD_AI_QUERY':
       return { ...state, aiQueries: [...state.aiQueries, action.payload] };
+    case 'SET_ACTIVE_RESOURCE_LINK':
+      return { ...state, activeResourceLink: action.payload };
     case 'TOGGLE_VOICE':
       return { ...state, voiceEnabled: action.payload };
     default:

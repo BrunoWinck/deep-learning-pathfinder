@@ -163,11 +163,11 @@ export const LearningPathsWidget = () => {
     setEditingStepIndex(null);
   };
 
-  const copyResourceLink = (link: string) => {
-    navigator.clipboard.writeText(link);
+  const setResourceLink = (link: string, title: string) => {
+    dispatch({ type: 'SET_ACTIVE_RESOURCE_LINK', payload: link });
     toast({
-      title: "Link copied",
-      description: "Resource link has been copied to clipboard"
+      title: "Resource selected",
+      description: `Selected resource: ${title}`
     });
   };
 
@@ -210,8 +210,8 @@ export const LearningPathsWidget = () => {
                     <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <button
                         className="p-1 hover:text-primary"
-                        onClick={() => copyResourceLink(resource.link)}
-                        aria-label={`Copy ${resource.title} link`}
+                        onClick={() => setResourceLink(resource.link, resource.title)}
+                        aria-label={`Select ${resource.title} resource`}
                       >
                         <Link2 size={14} />
                       </button>
@@ -258,8 +258,8 @@ export const LearningPathsWidget = () => {
                         <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
                           <button
                             className="p-1 hover:text-primary"
-                            onClick={() => copyResourceLink(resource.link)}
-                            aria-label={`Copy ${resource.title} link`}
+                            onClick={() => setResourceLink(resource.link, resource.title)}
+                            aria-label={`Select ${resource.title} resource`}
                           >
                             <Link2 size={14} />
                           </button>
