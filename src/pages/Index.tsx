@@ -12,7 +12,7 @@ const Index = () => {
           <LearningPathsWidget />
         </div>
         <div className="space-y-4">
-          <div className="bg-gray-100 rounded-lg p-4 h-[400px]">
+          <div className="bg-gray-100 rounded-lg p-4 h-[200px]">
             <AIDebugWidget />
           </div>
           <div className="bg-orange-100 rounded-lg p-4 flex-1">
