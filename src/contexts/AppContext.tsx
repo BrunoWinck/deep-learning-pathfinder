@@ -149,14 +149,14 @@ const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
               }
               return response.json();
             })
-            .then(statements => {
-              if (!Array.isArray(statements)) {
+            .then(response => {
+              console.log('Raw LRS Response:', response);
+              
+              if (!response.statements || !Array.isArray(response.statements)) {
                 throw new Error('Invalid response format from xAPI server');
               }
               
-              console.log('Raw LRS Response:', statements);
-              
-              const transformedStatements = statements.map((stmt: any) => ({
+              const transformedStatements = response.statements.map((stmt: any) => ({
                 id: stmt.id,
                 timestamp: new Date(stmt.timestamp).getTime(),
                 verb: stmt.verb.display['en-US'].toLowerCase(),
