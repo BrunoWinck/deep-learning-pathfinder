@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useReducer, Dispatch } from 'react';
 import { LearningPath } from '@/types/learning';
 import { toast } from 'sonner';
@@ -134,7 +133,6 @@ const appReducer = (state: AppState, action: Action): AppState => {
   }
 };
 
-// Middleware to handle async actions
 const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
   return async (action: AppAction) => {
     if (action.type === 'FETCH_STATEMENTS') {
@@ -156,6 +154,8 @@ const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
                 throw new Error('Invalid response format from xAPI server');
               }
               
+              console.log('Raw LRS Response:', statements);
+              
               const transformedStatements = statements.map((stmt: any) => ({
                 id: stmt.id,
                 timestamp: new Date(stmt.timestamp).getTime(),
@@ -165,17 +165,22 @@ const createThunkMiddleware = (state: AppState, dispatch: Dispatch<Action>) => {
                 grade: stmt.result?.score?.scaled ? Math.round(stmt.result.score.scaled * 10) : 5
               }));
 
+              console.log('Transformed Statements:', transformedStatements);
+
               dispatch({ type: 'HYDRATE_STATEMENTS', payload: transformedStatements });
             }),
           {
             loading: 'Fetching learning statements...',
             success: 'Learning statements loaded successfully',
-            error: (err) => `Failed to load statements: ${err.message}`
+            error: (err) => `Failed to load statements: ${err.message}`,
+            duration: 30000 // 30 seconds
           }
         );
       } catch (error) {
         console.error('Failed to fetch xAPI statements:', error);
-        toast.error('Failed to connect to xAPI server');
+        toast.error('Failed to connect to xAPI server', {
+          duration: 30000 // 30 seconds
+        });
       }
     } else {
       dispatch(action as Action);
@@ -191,13 +196,11 @@ export const AppContext = createContext<{
 export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [state, baseDispatch] = useReducer(appReducer, initialState);
   
-  // Wrap dispatch with middleware
   const dispatch = (action: AppAction) => {
     const thunkDispatch = createThunkMiddleware(state, baseDispatch);
     thunkDispatch(action);
   };
 
-  // Fetch statements when provider mounts
   React.useEffect(() => {
     dispatch({ type: 'FETCH_STATEMENTS' });
   }, []);
