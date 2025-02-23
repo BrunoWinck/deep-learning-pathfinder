@@ -1,0 +1,28 @@
+/* tw: flex items-center gap-2 px-3 py-2 rounded transition-colors duration-500 */
+.clock-bar2 {
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+  padding:0.75rem 1rem;
+  border-radius:0.5rem;
+  transition:color 0.5s;
+
+  /* tw: font-mono text-lg */
+  .-date-time {
+    font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-size:1.125rem;
+    line-height:1.75rem;
+  }
+  
+}
+
+/* tw: h-5 w-5 */
+.clock-bar {
+  height:1.25rem;
+  width:1.25rem;
+}
+
+/* tw: gap-2 */
+.clock-adjust {
+  gap:0.5rem;
+}

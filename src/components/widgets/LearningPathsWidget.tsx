@@ -206,23 +206,23 @@ export const LearningPathsWidget = () => {
   const selectedPathData = state.learningPaths.find(p => p.id === selectedPath);
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Learning Paths</h2>
+    <div className="widget-ext">
+      <div className="-header">
+        <h2 className="-title">Learning Paths</h2>
         <Button
           variant="outline"
           size="sm"
           onClick={handleAddPath}
-          className="flex items-center gap-1"
+          className="widget-button"
           aria-label="Add Path"
         >
-          <PlusCircle className="h-4 w-4" />
+          <PlusCircle className="icon1" />
           Add Path
         </Button>
       </div>
 
-      <div className="flex-1 overflow-auto">
-        <div className="space-y-2 mb-4" role="list" aria-label="Learning paths">
+      <div className="learning-paths-container">
+        <div className="learning-paths-list" role="list" aria-label="Learning paths">
           {state.learningPaths.map((path) => (
             <div key={path.id} role="listitem">
               <PathItem
@@ -237,11 +237,11 @@ export const LearningPathsWidget = () => {
                 onEditingNameChange={setEditingName}
               />
               {path.resources.length > 0 && (
-                <div className="ml-4 mt-1 space-y-1">
+                <div className="learningpath-resources">
                   {path.resources.map((resource, index) => (
-                    <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div key={index} className="-resource">
                       <button
-                        className="p-1 hover:text-primary"
+                        className="--button"
                         onClick={() => setResourceLink(resource.link)}
                         aria-label={`Select ${resource.title} resource`}
                       >
@@ -264,23 +264,23 @@ export const LearningPathsWidget = () => {
         </div>
 
         {selectedPathData && (
-          <div className="mt-4 space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="font-medium">Path Details</h3>
+          <div className="path-detail">
+            <div className="path-detail-header">
+              <h3 className="path-details-title">Path Details</h3>
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => handleAddSection(selectedPathData.id)}
-                className="flex items-center gap-1"
+                className="widget-button"
                 aria-label="Add Section"
               >
-                <PlusCircle className="h-4 w-4" />
+                <PlusCircle className="icon1" />
                 Add Section
               </Button>
             </div>
-            <div className="space-y-2" role="list" aria-label="Sections">
+            <div className="plan-sections" role="list" aria-label="Sections">
               {selectedPathData.sections.map((section) => (
-                <div key={section.id} className="p-2 bg-background rounded border" role="listitem">
+                <div key={section.id} className="plan-section" role="listitem">
                   <SectionItem
                     section={section}
                     isEditing={editingSection === section.id}
@@ -292,11 +292,11 @@ export const LearningPathsWidget = () => {
                     onEditingNameChange={setEditingSectionName}
                   />
                   {section.resources.length > 0 && (
-                    <div className="ml-4 mb-2 space-y-1">
+                    <div className="resources-list">
                       {section.resources.map((resource, index) => (
-                        <div key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <div key={index} className="-resource">
                           <button
-                            className="p-1 hover:text-primary"
+                            className="--button"
                             onClick={() => setResourceLink(resource.link)}
                             aria-label={`Select ${resource.title} resource`}
                           >
@@ -314,9 +314,9 @@ export const LearningPathsWidget = () => {
                       ))}
                     </div>
                   )}
-                  <div className="mt-2 space-y-1" role="list" aria-label="Steps">
+                  <div className="steps-list" role="list" aria-label="Steps">
                     {section.steps.map((step, index) => (
-                      <div key={index} className="flex items-center gap-2" role="listitem">
+                      <div key={index} className="step" role="listitem">
                         <input 
                           type="checkbox" 
                           className="rounded"

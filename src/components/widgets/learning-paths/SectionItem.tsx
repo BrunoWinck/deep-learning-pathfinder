@@ -14,12 +14,12 @@ export const SectionItem = ({
 }: SectionItemProps) => {
   if (isEditing) {
     return (
-      <div className="flex gap-2 mb-2">
+      <div className="section-edit">
         <input
           type="text"
           value={editingName}
           onChange={(e) => onEditingNameChange(e.target.value)}
-          className="flex-1 p-2 rounded border"
+          className="new-input-name"
           autoFocus
           aria-label="Section name"
         />
@@ -35,7 +35,7 @@ export const SectionItem = ({
 
   return (
     <h4
-      className="font-medium mb-2 cursor-pointer"
+      className="section-name-editable"
       onTouchStart={() => onSectionLongPress(section)}
       onTouchEnd={onPathTouchEnd}
       onMouseDown={() => onSectionLongPress(section)}

@@ -15,12 +15,12 @@ export const PathItem = ({
 }: PathItemProps) => {
   if (isEditing) {
     return (
-      <div className="flex gap-2">
+      <div className="clock-adjust">
         <input
           type="text"
           value={editingName}
           onChange={(e) => onEditingNameChange(e.target.value)}
-          className="flex-1 p-2 rounded border"
+          className="new-input-name"
           autoFocus
           aria-label="Path name"
         />
@@ -39,8 +39,8 @@ export const PathItem = ({
       onMouseDown={() => onPathLongPress(path)}
       onMouseUp={onPathTouchEnd}
       onMouseLeave={onPathTouchEnd}
-      className={`w-full text-left p-2 rounded ${
-        isSelected ? 'bg-accent' : 'hover:bg-accent/50'
+      className={`btn-path-item ${
+        isSelected ? '-selected' : ''
       }`}
       role="button"
       aria-selected={isSelected}

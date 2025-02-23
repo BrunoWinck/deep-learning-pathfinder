@@ -8,22 +8,24 @@ import { AppProvider } from "@/contexts/AppContext";
 const Index = () => {
   return <AppProvider>
       <DashboardLayout>
-        <div className="bg-blue-100 rounded-lg p-4">
-          <LearningPathsWidget />
+        <div className="column2">
+          <div className="widget widget1">
+            <LearningPathsWidget />
+          </div>
+          <div className="widget widget4">
+            <SearchDebugWidget />
+          </div>
         </div>
-        <div className="space-y-4 flex flex-col h-full">
-          <div className="bg-gray-100 rounded-lg p-4 h-[200px]">
+        <div className="column2">
+          <div className="widget widget2">
             <AIDebugWidget />
           </div>
-          <div className="bg-orange-100 rounded-lg p-4 flex-1">
+          <div className="widget widget3">
             <ChatWidget />
           </div>
         </div>
-        <div className="space-y-4">
-          <div className="bg-green-100 rounded-lg p-4 h-[200px]">
-            <SearchDebugWidget />
-          </div>
-          <div className="bg-violet-100 rounded-lg p-4 flex-1">
+        <div className="column2">
+          <div className="widget widget5">
             <LearningStatementsWidget />
           </div>
         </div>

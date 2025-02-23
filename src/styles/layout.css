@@ -1,0 +1,98 @@
+body {
+  overflow:hidden
+}
+/* we have root, region, notifications here */
+
+/* tw: bg-background flex-col min-h-screen */
+.dashboard-layout {
+  height:100vh;
+  display: flex;
+  flex-direction:column;
+  
+  /* tw: bg-secondary border-b items-center justify-between p-4 */
+  .title-bar {
+
+    flex: 1 1 0;
+
+    display: flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom-width:1px;
+    padding:1rem;
+    background-color: hsl(var(--secondary));    
+    /* tw: font-bold text-lg */
+    .-brand {
+      font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+      font-size:1.125rem;
+      line-height:1.75rem;
+      font-weight:700;
+    }
+    /* tw: gap-4 items-center */
+    .-right {
+      display: flex;
+      align-items:center;
+      gap:1rem;    
+    }
+  }
+
+  /* tw: flex-1 gap-4 grid-cols-3 p-4 */
+  .-columns {
+    flex: 1 1 auto;
+
+    display: grid;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:1rem;
+    padding:1rem;
+    /*height: calc(100vh - 150px);*/ /* Subtract title bar height */
+    align-items: stretch;       /* Ensure grid items stretch to fill container height */
+    overflow: hidden;
+
+    /* tw: flex-col h-full space-y-4 */
+    .column2 {
+      /*height: 670px;*/
+      overflow-y:hidden;
+      /*height:100%;*/
+      display: flex;
+      flex-direction:column;
+      margin-top:calc(1rem * calc(1 - 0));
+      margin-bottom:calc(1rem * 0);
+
+      .widget {
+        border-radius:0.5rem;
+        padding:1rem;
+
+        /* tw: flex-col h-full */
+        .widget-ext {
+          display:flex;
+          height:100%;
+          flex-direction:column;
+          /* tw: items-center justify-between mb-4 */
+          .-header {
+            display: flex;
+            margin-bottom:0.5rem;
+            align-items:center;
+            justify-content:space-between;
+
+            /* tw: font-semibold text-lg */
+            .-title {
+              font-size:1.125rem;
+              line-height:1.75rem;
+              font-weight:600;
+            }
+
+          }
+          /* tw: flex-1 overflow-auto space-y-2 */
+          .widget-result-list {
+            flex:1 1 0%;
+            margin-top:calc(0.5rem * calc(1 - 0));
+            margin-bottom:calc(0.5rem * 0);
+            overflow:auto;
+          }
+        }
+
+      }
+      
+    }
+
+  }
+}

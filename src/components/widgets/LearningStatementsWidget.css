@@ -1,4 +1,30 @@
 
+/* tw: bg-violet-100 flex-1 p-4 rounded-lg */
+.widget5 {
+  flex: 1 1 auto;      /* Fills the remaining space */
+  background-color:rgb(237,233,254);
+
+  .-header {
+    flex: 0 0 auto;    /* Do not shrink or grow */
+  }
+  p.help {
+    flex: 0 0 auto;    /* Do not shrink or grow */
+    font-size: 0.8rem;
+  }
+
+  .statements-scroll-area
+  {
+    flex: 1 1 auto;    /* Fills the remaining space */
+    overflow-y: auto;  /* Add scroll if content exceeds available space */
+    overflow-x:hidden;  /* Hide horizontal scroll */
+    min-height: 0;   /* Allow the list to shrink below its content's natural size */
+    height: 10px;    /* Set a minimum height to avoid collapsing */
+  }
+  .statement-form {
+    flex: 0 0 auto;    /* Do not shrink or grow */
+  }
+}
+
 .learning-statements-container {
   display: flex;
   flex-direction: column;
@@ -7,8 +33,6 @@
 }
 
 .statements-scroll-area {
-  flex: 1;
-  overflow-y: auto;
   padding-right: 0.5rem;
 }
 
@@ -23,6 +47,7 @@
   border-radius: 0.5rem;
   padding: 1rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow-x:hidden;  /* Hide horizontal scroll */
 }
 
 .statement-header {
@@ -39,6 +64,7 @@
 }
 
 .link-button {
+  border: none;
   padding: 0.25rem;
   border-radius: 0.25rem;
   color: #666;
@@ -121,4 +147,59 @@
 .form-group select:focus + label,
 .form-group textarea:focus + label {
   color: #2563eb;
+}
+
+/* tw: gap-1 items-center statement-object-link text-blue-600 */
+.statement-link {
+  align-items:center;
+  gap:0.25rem;
+  color:rgb(37,99,235);
+}
+
+/* tw: grade-display text-center w-8 */
+.statement-score {
+  width:2rem;
+  text-align:center;
+}
+
+/* tw: flex-1 */
+.grade-slider {
+  flex:1 1 0%;
+}
+
+/* tw: gap-4 items-center */
+.form-row {
+  display: flex;
+  flex-direction: row;
+  align-items:center;
+  gap:1rem;
+}
+
+.widget5 {
+
+  .widget-ext {
+    .-header {
+      flex: 0 0 auto;
+    }
+    .statements-scroll-area {
+      flex: 1 1 auto;
+    }
+    .statement-form {
+      flex: 0 0 auto;
+      .form-group {
+        label {
+          font-size:0.8rem;
+          color:blue;
+        }
+      }
+      .form-group input, .form-group select, .form-group textarea {
+        padding:0.1rem;
+        /*
+        border:1px solid #ddd;
+        border-radius:0.25rem;
+        width:100%;
+        */
+      }
+    }
+  }
 }

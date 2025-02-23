@@ -1,0 +1,32 @@
+/* tw: bg-gray-100 items-center justify-center min-h-screen */
+.page-404 {
+  min-height:100vh;
+  align-items:center;
+  justify-content:center;
+  background-color:rgb(243,244,246);
+
+  /* tw: text-center */
+  .-body {
+    text-align:center;
+
+    /* tw: font-bold mb-4 text-4xl */
+    .-title {
+      margin-bottom:1rem;
+      font-size:2.25rem;
+      line-height:2.5rem;
+      font-weight:700;
+    }
+    /* tw: mb-4 text-gray-600 text-xl */
+    .message {
+      margin-bottom:1rem;
+      font-size:1.25rem;
+      line-height:1.75rem;
+      color:rgb(75,85,99);
+    }
+    /* tw: text-blue-500 */
+    .link {
+      color:rgb(59,130,246);
+    }
+  }
+}
+

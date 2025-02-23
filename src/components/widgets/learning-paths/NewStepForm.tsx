@@ -13,13 +13,13 @@ export const NewStepForm = ({
   onAddStep,
 }: NewStepFormProps) => {
   return (
-    <div className="flex gap-2 mt-2">
+    <div className="new-step-form">
       <input
         type="text"
         value={newStepText}
         onChange={(e) => onNewStepTextChange(e.target.value)}
         placeholder="New step..."
-        className="flex-1 p-2 rounded border"
+        className="new-input-name"
         aria-label="New step"
       />
       <Button size="sm" onClick={onAddStep}>

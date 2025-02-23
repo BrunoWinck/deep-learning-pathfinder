@@ -237,7 +237,7 @@ const ChartTooltipContent = React.forwardRef<
                         </span>
                       </div>
                       {item.value && (
-                        <span className="font-mono font-medium tabular-nums text-foreground">
+                        <span className="tw-f44c2b">
                           {item.value.toLocaleString()}
                         </span>
                       )}
@@ -298,7 +298,7 @@ const ChartLegendContent = React.forwardRef<
                 <itemConfig.icon />
               ) : (
                 <div
-                  className="h-2 w-2 shrink-0 rounded-[2px]"
+                  className="tw-d4dfbf"
                   style={{
                     backgroundColor: item.color,
                   }}

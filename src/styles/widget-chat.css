@@ -1,0 +1,109 @@
+/* tw: bg-orange-100 flex-1 p-4 rounded-lg */
+.widget3 {
+  flex:1 1 0%;
+  background-color:rgb(255,237,213);
+
+  .widget-ext {
+    .-header {
+      flex: 0 0 auto;
+    }
+    .messages-list {
+      flex: 1 1 auto;
+    }
+    .form-adjust {
+      flex: 0 0 auto;
+    }
+  }
+}
+
+/* tw: gap-2 items-center */
+.conversation1 {
+  align-items:center;
+  gap:0.5rem;
+
+  /* tw: animate-pulse text-muted-foreground text-sm */
+  .-speaking {
+    animation:pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    font-size:0.875rem;
+    line-height:1.25rem;
+  }
+}
+
+/* tw: flex-1 mb-4 overflow-auto space-y-4 */
+.messages-list {
+  margin-bottom:calc(1rem * 0);
+  flex:1 1 auto;
+  margin-top:calc(1rem * calc(1 - 0));
+  overflow:auto;
+
+  /* tw: flex flex-col */
+  .message {
+    display:flex;
+    flex-direction:column;
+
+    &.from-ai
+    {
+      
+      /* tw: items-start bg-gray-100 */
+      align-items:flex-start;
+      background-color:hsl(var(--gray-100));
+                
+      .text {
+        /* tw: bg-gray-200 */
+        background-color:hsl(var(--gray-200));
+      }
+    }
+
+    &.from-user
+    {
+      /* tw: bg-primary text-primary-foreground */
+      align-items:flex-end;
+      background-color:hsl(var(--primary));
+      color:hsl(var(--primary-foreground));
+
+      .text {
+        /* tw: bg-primary-foreground */
+        background-color:hsl(var(--primary-foreground));
+      }
+    }
+
+    /* tw: p-3 rounded-lg max-w-[80%]  */
+    .text
+    {
+      /* tw: p-2 */
+      padding:0.5rem;
+      border-radius:0.5rem;
+      max-width:80%;
+    }
+  }
+}
+
+/* tw: gap-1 mt-1 */
+.msg-reactions {
+  margin-top:0.25rem;
+  gap:0.25rem;
+}
+
+/* tw: transition-transform */
+.reaction-button {
+  transition-property:transform;
+  transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration:150ms;
+}
+
+/* tw: flex-1 px-3 py-2 */
+.message-input {
+  flex:1 1 0%;
+  padding-left:0.75rem;
+  padding-right:0.75rem;
+  padding-top:0.5rem;
+  padding-bottom:0.5rem;
+}
+
+/* tw: gap-2 */
+.form-adjust {
+  flex: 1 1 0;
+  gap:0.5rem;
+}
+
+

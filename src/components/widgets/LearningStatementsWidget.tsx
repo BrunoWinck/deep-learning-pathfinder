@@ -132,9 +132,11 @@ export const LearningStatementsWidget = () => {
   };
 
   return (
-    <div className="learning-statements-container">
-      <h2>Learning Statements</h2>
-      
+    <div className="widget-ext learning-statements-container">
+      <div className="-header">
+        <h2 className="-title">Learning Statements</h2>
+      </div>
+      <p className="help">Record your learning activities by adding statements below.</p>      
       <div className="statements-scroll-area">
         <div className="statements-list">
           {state.learningStatements.map((statement) => (
@@ -153,7 +155,7 @@ export const LearningStatementsWidget = () => {
                   href={statement.object} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="statement-object-link flex items-center gap-1 text-blue-600 hover:text-blue-800"
+                  className="statement-link"
                 >
                   {statement.object}
                   <ExternalLink size={14} />
@@ -253,8 +255,8 @@ export const LearningStatementsWidget = () => {
         </div>
 
         <div className="form-group">
-          <div className="flex items-center gap-4">
-            <div className="grade-display w-8 text-center" aria-live="polite">
+          <div className="form-row">
+            <div className="statement-score" aria-live="polite">
               {Math.round(form.result.score.scaled * 10)}
             </div>
             <input
@@ -272,7 +274,7 @@ export const LearningStatementsWidget = () => {
                 }
               }))}
               aria-labelledby="grade-label"
-              className="flex-1"
+              className="grade-slider"
             />
             <Button 
               onClick={handleSubmit} 

@@ -1,0 +1,33 @@
+/* tw: bg-green-100 p-4 rounded-lg */
+.widget4 {
+  background-color:rgb(220,252,231);
+  height: 200px;
+  flex: 0 0 auto;      /* Do not shrink or grow */
+}
+
+/* tw: bg-background font-mono overflow-auto p-2 text-xs */
+.search-widget-container {
+  overflow:auto;
+  padding:0.5rem;
+  /* font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;*/
+  font-size:0.75rem;
+  line-height:1rem;
+}
+
+/* tw: mb-2 text-sm */
+.search-link {
+  margin-bottom:0.5rem;
+  font-size:0.875rem;
+  line-height:1.25rem;
+}
+
+/* tw: text-sm */
+.search-url {
+  font-size:0.875rem;
+  line-height:1.25rem;
+}
+
+/* tw: bg-background p-2 */
+.search-match {
+  padding:0.5rem;
+}

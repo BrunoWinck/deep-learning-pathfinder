@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { Button } from '@/components/ui/button';
 import { useConversation } from '@11labs/react';
+import ReactMarkdown from "react-markdown";
 
 export const ChatWidget = () => {
   const { state, dispatch } = useApp();
@@ -66,12 +67,12 @@ export const ChatWidget = () => {
   };
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">Chat</h2>
-        <div className="flex gap-2 items-center">
+    <div className="widget-ext">
+      <div className="-header">
+        <h2 className="-title">Chat</h2>
+        <div className="conversation1">
           {conversation.isSpeaking && (
-            <span className="text-sm text-muted-foreground animate-pulse" role="status" aria-live="polite">
+            <span className="-speaking" role="status" aria-live="polite">
               Speaking...
             </span>
           )}
@@ -86,30 +87,28 @@ export const ChatWidget = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-auto space-y-4 mb-4" role="log" aria-label="Chat messages">
+      <div className="messages-list" role="log" aria-label="Chat messages">
         {state.chatMessages.map((msg) => (
           <div
             key={msg.id}
-            className={`flex flex-col ${msg.isAI ? 'items-start' : 'items-end'}`}
+            className={`message ${msg.isAI ? 'from-ai' : 'from-user'}`}
             role="log"
             aria-label={msg.isAI ? 'AI message' : 'User message'}
           >
             <div
-              className={`p-3 rounded-lg max-w-[80%] ${
-                msg.isAI ? 'bg-background border' : 'bg-primary text-primary-foreground'
-              }`}
+              className="-text"
             >
-              {msg.text}
+              <ReactMarkdown>{msg.text}</ReactMarkdown>
             </div>
             {msg.isAI && (
-              <div className="flex gap-1 mt-1" role="group" aria-label="Message reactions">
+              <div className="msg-reactions" role="group" aria-label="Message reactions">
                 {['❤️', '👍', '👎', '🙏'].map((reaction) => {
                   const activated = msg.reactions.includes(reaction);
                   return
                     <button
                       key={reaction}
                       onClick={() => addReaction(msg.id, reaction as '❤️' | '👍' | '👎' | '🙏')}
-                      className="hover:scale-125 transition-transform"
+                      className="reaction-button"
                       aria-label={`React with ${reaction}`}
                     >
                       {reaction}
@@ -122,7 +121,7 @@ export const ChatWidget = () => {
       </div>
 
       <form 
-        className="flex gap-2"
+        className="form-adjust"
         onSubmit={(e) => {
           e.preventDefault();
           if (message.trim()) {
@@ -137,7 +136,7 @@ export const ChatWidget = () => {
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          className="flex-1 px-3 py-2 rounded border"
+          className="message-input"
           placeholder="Type a message..."
           aria-label="Message input"
         />

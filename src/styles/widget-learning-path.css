@@ -1,0 +1,129 @@
+/* tw: bg-blue-100 p-4 rounded-lg */
+.widget1 {
+  background-color:rgb(219,234,254);
+}
+
+
+/* tw: flex-1 overflow-auto */
+.learning-paths-container {
+  flex:1 1 0%;
+  overflow:auto;
+  /* tw: mb-4 space-y-2 */
+  .learning-paths-list {
+    margin-bottom:calc(0.5rem * 0);
+    margin-top:calc(0.5rem * calc(1 - 0));
+  }
+}
+
+/* tw: ml-4 mt-1 space-y-1 */
+.learningpath-resources {
+  margin-left:1rem;
+  margin-top:calc(0.25rem * calc(1 - 0));
+  margin-bottom:calc(0.25rem * 0);
+}
+
+/* tw: gap-2 items-center text-muted-foreground text-sm */
+.-resource {
+  align-items:center;
+  gap:0.5rem;
+  font-size:0.875rem;
+  line-height:1.25rem;
+
+  /* tw: p-1 */
+  .--button {
+    padding:0.25rem;
+  }
+}
+
+/* tw: mt-4 space-y-4 */
+.path-detail {
+  margin-top:calc(1rem * calc(1 - 0));
+  margin-bottom:calc(1rem * 0);
+
+  /* tw: items-center justify-between */
+  .path-detail-header {
+    display: flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+}
+
+/* tw: space-y-2 */
+.plan-sections {
+  margin-top:calc(0.5rem * calc(1 - 0));
+  margin-bottom:calc(0.5rem * 0);
+}
+
+/* tw: mb-2 ml-4 space-y-1 */
+.resources-list {
+  margin-bottom:calc(0.25rem * 0);
+  margin-left:1rem;
+  margin-top:calc(0.25rem * calc(1 - 0));
+}
+
+/* tw: mt-2 space-y-1 */
+.steps-list {
+  margin-top:calc(0.25rem * calc(1 - 0));
+  margin-bottom:calc(0.25rem * 0);
+}
+
+/* tw: gap-2 items-center */
+.step {
+  align-items:center;
+  gap:0.5rem;
+}
+
+/* tw: bg-background p-2 */
+.plan-section {
+  padding:0.5rem;
+}
+
+/* tw: font-medium */
+.path-details-title {
+  font-weight:500;
+}
+
+/* tw: flex-1 gap-2 */
+.step-edit {
+  flex:1 1 0%;
+  gap:0.5rem;
+}
+
+/* tw: flex-1 p-1 text-sm */
+.step-name-input {
+  flex:1 1 0%;
+  padding:0.25rem;
+  font-size:0.875rem;
+  line-height:1.25rem;
+}
+
+/* tw: cursor-pointer flex-1 */
+.step-button {
+  flex:1 1 0%;
+  cursor:pointer;
+}
+
+/* tw: gap-2 mb-2 */
+.section-edit {
+  margin-bottom:0.5rem;
+  gap:0.5rem;
+}
+
+/* tw: cursor-pointer font-medium mb-2 */
+.section-name-editable {
+  margin-bottom:0.5rem;
+  cursor:pointer;
+  font-weight:500;
+}
+
+/* tw: gap-2 mt-2 */
+.new-step-form {
+  margin-top:0.5rem;
+  gap:0.5rem;
+}
+
+/* tw: flex-1 p-2 */
+.new-input-name {
+  flex:1 1 0%;
+  padding:0.5rem;
+}

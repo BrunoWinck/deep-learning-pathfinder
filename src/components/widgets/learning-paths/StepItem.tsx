@@ -16,12 +16,12 @@ export const StepItem = ({
 }: StepItemProps) => {
   if (isEditing) {
     return (
-      <div className="flex flex-1 gap-2">
+      <div className="step-edit">
         <input
           type="text"
           value={editingName}
           onChange={(e) => onEditingNameChange(e.target.value)}
-          className="flex-1 p-1 rounded border text-sm"
+          className="step-name-input"
           autoFocus
           aria-label="Step name"
         />
@@ -37,7 +37,7 @@ export const StepItem = ({
 
   return (
     <span
-      className="flex-1 cursor-pointer"
+      className="step-button"
       onTouchStart={() => onStepLongPress(step, index)}
       onTouchEnd={onPathTouchEnd}
       onMouseDown={() => onStepLongPress(step, index)}
