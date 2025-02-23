@@ -66,6 +66,22 @@ export const ChatWidget = () => {
     });
   };
 
+  // Helper function to check if a reaction has been clicked
+  const isReactionClicked = (messageId: string, reaction: '❤️' | '👍' | '👎' | '🙏') => {
+    const message = state.chatMessages.find(msg => msg.id === messageId);
+    return message?.reactions.includes(reaction);
+  };
+
+  // Helper function to get reaction style based on clicked state
+  const getReactionStyle = (messageId: string, reaction: '❤️' | '👍' | '👎' | '🙏') => {
+    const clicked = isReactionClicked(messageId, reaction);
+    return {
+      color: clicked ? undefined : '#8E9196', // Grey when unclicked
+      opacity: clicked ? 1 : 0.7,
+      cursor: 'pointer',
+    };
+  };
+
   return (
     <div className="widget-ext">
       <div className="-header">
